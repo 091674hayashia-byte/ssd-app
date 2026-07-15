@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スポーツサイエンスデザイン 管理アプリ</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;color:#1a1a1a;background:#f5f5f3;min-height:100vh}
+.app-wrapper{max-width:820px;margin:0 auto;padding:24px 16px}
+.top-tabs{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid #ddd}
+.top-tab{padding:12px 24px;font-size:15px;font-weight:500;cursor:pointer;border:none;background:none;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s}
+.top-tab.active{color:#1a1a1a;border-bottom-color:#185FA5}
+.top-tab:hover{color:#1a1a1a}
+.top-tab i{margin-right:6px;font-size:16px}
+.income-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px}
+.income-table th{background:#f0f0ee;padding:8px 10px;text-align:left;font-weight:500;font-size:12px;color:#666;border-bottom:1px solid #ddd}
+.income-table td{padding:7px 10px;border-bottom:.5px solid #eee}
+.income-table tr:hover td{background:#fafaf8}
+.income-table .amount{text-align:right;font-weight:500}
+.income-table .total-row td{font-weight:500;border-top:2px solid #ddd;background:#f8f8f6}
+.month-card{background:#fff;border:.5px solid #e0e0e0;border-radius:12px;padding:16px 20px;margin-bottom:16px}
+.month-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;cursor:pointer}
+.month-header h3{font-size:16px;font-weight:500}
+.month-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.month-summary .ms{background:#f8f8f6;border-radius:8px;padding:10px;text-align:center}
+.month-summary .ms-label{font-size:11px;color:#888}
+.month-summary .ms-value{font-size:18px;font-weight:500;margin-top:2px}
+.income-form-row{display:grid;grid-template-columns:100px 40px 120px 90px 1fr 40px;gap:6px;align-items:center;margin-bottom:4px;font-size:12px}
+.income-form-row input,.income-form-row select{font-size:12px;padding:4px 6px}
+.app-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.app-header h1{font-size:20px;font-weight:500}
+.app-header .subtitle{font-size:13px;color:#888}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+.stat{background:#fff;border-radius:10px;padding:14px;border:.5px solid #e0e0e0}
+.stat-label{font-size:11px;color:#888}
+.stat-value{font-size:22px;font-weight:500;margin-top:2px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap}
+.search-box{font-size:13px;width:220px;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;outline:none;background:#fff}
+.search-box:focus{border-color:#378ADD}
+button{padding:8px 16px;border:.5px solid #bbb;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:#333;transition:background .15s}
+button:hover{background:#f0f0f0}
+button:active{transform:scale(.98)}
+.btn-primary{background:#E6F1FB;color:#185FA5;border-color:#85B7EB}
+.btn-primary:hover{background:#d0e5f7}
+.btn-danger{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+.btn-danger:hover{background:#f7d5d5}
+.btn-success{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+.btn-success:hover{background:#ddedc8}
+.card{background:#fff;border:.5px solid #e0e0e0;border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:16px;flex-shrink:0}
+.section-title{font-size:12px;color:#888;margin:18px 0 8px;padding-bottom:4px;border-bottom:.5px solid #e8e8e8;letter-spacing:.5px}
+.field{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;font-size:13px;gap:12px}
+.field-label{color:#888;flex-shrink:0;min-width:120px}
+.field-value{text-align:right;word-break:break-word}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;margin:1px 2px}
+.badge-count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;border-radius:10px;font-size:11px;font-weight:500;padding:0 6px}
+.list-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fff;border:.5px solid #e0e0e0;border-radius:10px;margin-bottom:6px;cursor:pointer;transition:background .15s}
+.list-item:hover{background:#f8f8f6}
+.list-item .name{font-weight:500;font-size:14px}
+.list-item .meta{font-size:12px;color:#888}
+.free-text{background:#f8f8f6;border-radius:8px;padding:10px 12px;font-size:13px;line-height:1.7;margin-top:4px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:12px;color:#888;margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 12px;border:.5px solid #ccc;border-radius:8px;font-size:13px;outline:none;background:#fff;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#378ADD}
+.form-group textarea{min-height:60px;resize:vertical}
+.form-actions{display:flex;gap:8px;margin-top:20px}
+.form-actions button{flex:1;padding:10px}
+.checkbox-group{display:flex;flex-wrap:wrap;gap:8px}
+.checkbox-group label{font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#888;cursor:pointer;margin-bottom:16px;border:none;background:none;padding:0}
+.back-link:hover{color:#333;background:none}
+.consent-ok{color:#0F6E56}
+.consent-ng{color:#A32D2D}
+.health-warn{color:#A32D2D}
+.empty-msg{text-align:center;color:#888;padding:2rem;font-size:13px}
+.session-tab{display:inline-flex;align-items:center;gap:4px;padding:8px 14px;border:.5px solid #ddd;border-bottom:none;border-radius:8px 8px 0 0;background:#f5f5f3;cursor:pointer;font-size:13px;color:#888;margin-right:2px}
+.session-tab.active{background:#fff;color:#1a1a1a;font-weight:500;border-bottom:.5px solid #fff;margin-bottom:-1px;position:relative;z-index:1}
+.session-tabs{display:flex;align-items:flex-end;border-bottom:.5px solid #ddd;margin-bottom:0;padding:0 4px;flex-wrap:wrap}
+.session-content{border:.5px solid #ddd;border-top:none;border-radius:0 0 12px 12px;padding:16px;background:#fff;margin-bottom:12px}
+.progress-badge{display:inline-block;padding:3px 10px;border-radius:8px;font-size:11px}
+.compare-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+.compare-col{background:#f8f8f6;border-radius:8px;padding:10px;font-size:13px}
+.compare-col .col-label{font-size:11px;color:#888;margin-bottom:4px}
+.review-card{background:#FBEAF0;border:.5px solid #ED93B1;border-radius:10px;padding:14px;margin-top:16px}
+.review-card .rv-header{font-size:12px;color:#72243E;margin-bottom:10px;font-weight:500}
+.review-card .rv-field{padding:4px 0;font-size:13px}
+.review-card .rv-label{color:#993556;font-size:11px;margin-bottom:2px}
+.review-card .rv-value{color:#4B1528;line-height:1.6}
+.star-rating{color:#EF9F27;font-size:14px;letter-spacing:2px}
+.sync-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:#fff;border:.5px solid #e0e0e0;border-radius:10px;margin-bottom:16px;font-size:12px;color:#888}
+.sync-bar .sync-status{display:flex;align-items:center;gap:6px}
+.sync-bar .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.sync-dot.ok{background:#97C459}
+.sync-dot.saving{background:#EF9F27}
+.sync-dot.error{background:#E24B4A}
+.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(245,245,243,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;font-size:15px;color:#888}
+.loading-overlay .spinner{width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:#185FA5;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.share-box{background:#E6F1FB;border:.5px solid #85B7EB;border-radius:10px;padding:12px 16px;margin-bottom:16px}
+.share-box .share-url{width:100%;padding:8px 10px;border:.5px solid #85B7EB;border-radius:6px;font-size:12px;background:#fff;outline:none;margin:8px 0}
+@media(max-width:600px){
+  .app-wrapper{padding:12px 8px}
+  .search-box{width:100%}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .compare-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="loading-overlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <div>データを読み込んでいます...</div>
+</div>
+<div class="app-wrapper">
+  <div class="app-header">
+    <div>
+      <h1><i class="ti ti-swimming" aria-hidden="true"></i> スポーツサイエンスデザイン</h1>
+      <div class="subtitle">個人事業 管理アプリ</div>
+    </div>
+  </div>
+  <div id="sync-bar" class="sync-bar" style="display:none;">
+    <div class="sync-status">
+      <span class="sync-dot ok" id="sync-dot"></span>
+      <span id="sync-text">クラウド同期済み</span>
+    </div>
+    <div id="sync-buttons" style="display:flex;gap:6px;">
+      <button style="font-size:11px;padding:4px 10px;" onclick="refreshFromCloud()"><i class="ti ti-refresh" aria-hidden="true"></i> 最新に更新</button>
+      <button style="font-size:11px;padding:4px 10px;" onclick="showShareDialog()"><i class="ti ti-share" aria-hidden="true"></i> 共有URL</button>
+      <button style="font-size:11px;padding:4px 10px;background:#FFF3E0;color:#854F0B;border-color:#F0B968;" onclick="showImportDialog()"><i class="ti ti-file-import" aria-hidden="true"></i> データ取り込み</button>
+    </div>
+    <div id="local-cloud-buttons" style="display:none;gap:6px;flex-direction:column;align-items:flex-end;">
+      <button class="btn-primary" style="font-size:11px;padding:4px 12px;" onclick="copyDataToClipboard()"><i class="ti ti-copy" aria-hidden="true"></i> データをコピー（クラウドへ送る準備）</button>
+      <div id="local-cloud-url" style="font-size:10px;color:#185FA5;word-break:break-all;max-width:300px;"></div>
+    </div>
+  </div>
+  <div id="share-dialog" style="display:none;"></div>
+  <div id="import-dialog" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:14px;padding:24px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">
+      <div style="font-weight:500;font-size:15px;margin-bottom:8px;"><i class="ti ti-file-import"></i> データ取り込み</div>
+      <p style="font-size:12px;color:#888;margin-bottom:12px;">ローカルのアプリでコピーしたデータを下に貼り付けてください。</p>
+      <textarea id="import-json" style="width:100%;height:180px;font-size:11px;padding:8px;border:.5px solid #ccc;border-radius:8px;font-family:monospace;resize:vertical;" placeholder="ここにデータを貼り付け..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-primary" style="flex:1;" onclick="importAndSave()"><i class="ti ti-cloud-upload"></i> 取り込んでクラウドへ保存</button>
+        <button style="flex:1;" onclick="document.getElementById('import-dialog').style.display='none';">キャンセル</button>
+      </div>
+      <div id="import-status" style="font-size:12px;margin-top:8px;"></div>
+    </div>
+  </div>
+  <div class="top-tabs">
+    <button class="top-tab" onclick="switchTopTab('business')" id="tab-business"><i class="ti ti-coin" aria-hidden="true"></i>個人事業</button>
+    <button class="top-tab active" onclick="switchTopTab('lesson')" id="tab-lesson"><i class="ti ti-clipboard" aria-hidden="true"></i>個人レッスン</button>
+  </div>
+  <div id="app"></div>
+  <div id="app-business" style="display:none;"></div>
+</div>
+
+<script>
+const COLORS=[
+  {bg:'#E6F1FB',color:'#0C447C'},{bg:'#EEEDFE',color:'#3C3489'},
+  {bg:'#E1F5EE',color:'#085041'},{bg:'#FAECE7',color:'#712B13'},
+  {bg:'#FBEAF0',color:'#72243E'},{bg:'#EAF3DE',color:'#27500A'},
+  {bg:'#FAEEDA',color:'#633806'}
+];
+
+const defaultClients=[
+{id:1,name:'杉村直美',furigana:'すぎむら なおみ',age:'60歳以上',gender:'女性',
+contact:'09029244298',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）','バタフライ','個人メドレー'],
+bestTimes:'50Mクロール39秒 50Mバタフライ47秒 100m個人メドレー1分47秒',
+lessonType:'相談して決めたい',improvements:['ストローク','姿勢・浮き','ターン'],
+goal:'速く泳げない理由を解説していただき、速く泳ぐために必要なことを教えてほしい',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'2月14日（土）21日（土）28日（土）など。待ち時間はある程度大丈夫です',
+notes:'10年ぶりぐらいに水泳を再開して2年目です。やめた頃のタイムから激落ちです。年齢もあるのは承知ですが…なにがいけないのか…自分がどう泳いでいたかも思い出せません。再開したころにいかに長くらくに泳ぐかを意識しすぎたのが原因かもしれません。水泳、速くなりたいですし、うまくなりたいです。',
+height:'',followups:[],
+reviews:[{session:1,date:'2026/02/14',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'手のかき方が自分の想像とはかけ離れていたことが知れたこと、クロールでもうねっていると指摘をうけたこと、息継ぎのときの減速、圧巻は「つねに課題を意識して泳ぎましょう」というご指摘（すべての身体ものはそうですが、忘れていました…涙）',
+motivation:'すぐに意識して練習してみたい',
+recommend:'もっとうまくなりたい人、速くなりたい人など、目標はあるけれどどうしたら改善したらいいかわからない方にぜひ！！！',
+comments:'2つめの速度と泳ぎの映像が衝撃的でした。タイトルもつけてくださってありがとうございます。ワンポイントどころか、たくさん教えていただきうれしかったです。あのあとの練習は、うでのかきに集中できたので、いつもよりちょっと速かったですし、かき数も少なくなりました。ものすごくうれしいです！'}]
+},
+{id:2,name:'榊原隆生',furigana:'さかきばら たかお',age:'50〜59歳',gender:'男性',
+contact:'09017415850',swimYears:'11年以上',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）','バタフライ','個人メドレー'],
+bestTimes:'25フリーで16秒台',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','スタート','持久力'],
+goal:'綺麗なフォームのままで、速く泳ぎたい',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'2月22日(日)14〜15時',
+notes:'このような機会を与えてくださり、感謝しております。心拍を測るため、アップルウォッチ装着は可能でしょうか。よろしくお願いいたします。',
+height:'',followups:[],
+reviews:[{session:1,date:'2026/02/21',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'飛び込みのことを教わったことがなかったので、手順を実践で教えていただいたので良く理解できました。アドバイス後の飛び込みで入水してからの速度が速くなったと実感したので効果あったと思いました。',
+motivation:'すぐに意識して練習してみたい',
+recommend:'人は何かイメージして行動してますが、イメージと現実はズレてるものです。練習してるけど努力の割に効果を感じてない人にお勧めのレッスンです。',
+comments:'映像もビフォーアーアフター頂けるし、飛び込みなども外と水中と丁寧に撮影頂いて感激でした。特に飛び込みのbefore after映像は違いが分かって良かったです。泳速推移で自分の腰の動き方からストリームラインを読み取ってるようですが、上下動が大きいことが良く見てとれました。課題が分かると今後の練習に繋げられるのでレッスン受けて正解って思いました。いろいろ疑問点も後から湧いてくるのでLINE通じてご負担にならない程度にアドバイス頂けると幸いです。'}]
+},
+{id:3,name:'古田志乃雅',furigana:'ふるた しのか',age:'50〜59歳',gender:'女性',
+contact:'08030702648',swimYears:'11年以上',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）'],
+bestTimes:'1500m Fr 28分10秒（長水路）',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','ターン'],
+goal:'1500m Fr 27分30秒',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'2/28（土）15時以降',
+notes:'もう一人受講希望者がいます。その人と二人でレッスンを受けたいです。',
+height:'',
+followups:[{date:'2026/04/06',lessonType:'エクストラレッスン（60分）10,000円',schedule:'4/26（日）15:00〜16:00',focusPoint:'入水時の指先からプッシュまでのキャッチ',practiceLevel:'かなり意識してできている',swimFreq:'2日に1回',practiceType:'1時間〜1時間30分のトレーニング, 自分で考えて泳いでいる（自主練）, 陸上トレーニング（ウェートトレーニングなど）',changeLevel:'少し感じる',currentIssue:'種目によるローリングの使い分け方',checkPoint:'ローリング',newGoal:'6/13 長水路の大会で1,500mを26分台で泳ぐ',freeNotes:'今更ながら泳ぎにローリングを取り入れ始めたので、いろいろ教えてください'}],
+reviews:[
+{session:1,date:'2026/02/27',satisfaction:'満足',clarity:'分かりやすかった',
+impression:'入水角度やハイエルボー、ターンの弱点を確認できたこと',
+motivation:'すぐに意識して練習してみたい',recommend:'もっと上達したい人に',
+comments:'継続することが必要かと思っています。また改めて第二弾をお願いしたいと思います。'},
+{session:2,date:'2026/04/26',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'前重心の仕組みを理解できたことです。プッシュとキックを合わせるタイミングで逆の手を放り出す動作は今まで意識していませんでした。',
+motivation:'すぐに意識して練習してみたい',recommend:'技術向上に意識をもっている人',
+comments:'予定より長い時間熱い指導をありがとうございました。とても有意義でした。映像により客観的に泳ぎを見ることができ、かつ理論的に解説をいただけるので頭の中での納得感が大きいです。身体で覚える指導も有意義ですが、このような方法は考える練習につながり自主練に役立ちます。とはいうものの、もし先生の練習会や教室があれば当然参加しますよ。今後とも宜しくお願いいたします。'}
+]},
+{id:4,name:'石井航平',furigana:'いしい こうへい',age:'20〜29歳',gender:'男性',
+contact:'08095526390',swimYears:'4〜10年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）'],bestTimes:'400mクロール 6分05秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作'],
+goal:'楽によく進むフォームの確認。習得のために必要な筋肉・柔軟性の確認',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'2/21 15:00からで確定',
+notes:'古田志乃雅様に同伴',height:'',
+followups:[{date:'2026/04/10',lessonType:'エクストラレッスン（60分）10,000円',schedule:'日曜日15:00〜',focusPoint:'腰が沈まないようにすること。2ビートキックの蹴り足とプルのタイミングが一致するように意識すること。',practiceLevel:'ある程度できている',swimFreq:'2日に1回',practiceType:'1時間〜1時間30分のトレーニング, 自分で考えて泳いでいる（自主練）, 走っている（30分以上）, 自転車をこいでいる（30分以上）',changeLevel:'感じる',currentIssue:'吸気量が増えるとどうしても腰が落ちてしまう。また、プルのタイミングでキックした側の腰が落ちてしまう。',checkPoint:'腰の下がり幅。反り腰になっていないか。',newGoal:'6月のトライアスロンで1500m23分を切る',freeNotes:''}],
+reviews:[
+{session:1,date:'2026/02/22',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'動画で自分の泳ぎを見たことがなかったので、右手がここまで流れてしまって水をかけていないことが一番印象に残りました。',
+motivation:'すぐに意識して練習してみたい',recommend:'ある程度は泳げるが、タイムが伸び悩んでいる人',comments:''},
+{session:2,date:'2026/04/14',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'自分の泳ぎのうち、最も抵抗になっていそうなところがどこかの指摘。今回の場合、入水後の右手がプルの前に下がってしまっていること。',
+motivation:'すぐに意識して練習してみたい',recommend:'',comments:''}
+]},
+{id:5,name:'青木規朗',furigana:'あおき のりあき',age:'50〜59歳',gender:'男性',
+contact:'https://line.me/ti/p/yw84o6PrmG',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['背泳ぎ'],bestTimes:'50m Ba 0:38.32',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['ストローク','キック','姿勢・浮き'],
+goal:'50m、100mのタイムを縮めたい',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'土曜日9:15開始と聞いております',
+notes:'長谷川さんから誘いがあり参加します。よろしくお願いします。',height:'',
+followups:[{date:'2026/04/21',lessonType:'エクストラレッスン（60分）10,000円',schedule:'4/25土 16:00〜17:00',focusPoint:'Baで水面に対して腰が上下しない。キャッチで腕が深く入りすぎない。泡を掴まない。',practiceLevel:'ある程度できている',swimFreq:'2日に1回',practiceType:'1時間〜1時間30分のトレーニング, 自分で考えて泳いでいる（自主練）, 陸上トレーニング（ウェートトレーニングなど）',changeLevel:'感じる',currentIssue:'Baです。伸びることが出来ず1かきの進む距離が短いように思います。キック推進力を有効に使えていないです。連動する動作の中で力(インパクト)を入れるタイミングがわかりません。',checkPoint:'Baの(特にダッシュ時の)推進力です。時間があればスタートもお願いします。',newGoal:'100Baで1:20.00を切りたいです。',freeNotes:'近い大会でFrもでる予定です。レッスンの内容を当日相談させていただきますと嬉しいです。'}],
+reviews:[
+{session:1,date:'2026/02/22',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'腰が下がっていることの対策です。上半身を1枚板でお辞儀をして、胸を張り、前のめりになること。',
+motivation:'すぐに意識して練習してみたい',recommend:'マスターズ伸び悩んでいる人に勧めたい',
+comments:'自分の改善するところがわかったので、常に意識をして泳ぎたいと思います。また、数ヶ月後の泳ぎがどう変わったのかを比較してみたいです。どうもありがとうございました。'},
+{session:2,date:'2026/05/31',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'先生が真剣にアドバイスを下さいましたこと。',
+motivation:'すぐに意識して練習してみたい',recommend:'タイムを少しずつ縮めていこうとしている方',
+comments:'これから 何人か声かけていきたいでね ご迷惑をお掛けしますがよろしくお願いします'}
+]},
+{id:6,name:'見崎美子',furigana:'みさき よしこ',age:'60歳以上',gender:'女性',
+contact:'080-9731-9664',swimYears:'11年以上',level:'中級（フォーム完全・楽に泳ぎたい）',
+strokes:['平泳ぎ'],bestTimes:'25m平泳ぎ 25秒',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['ストローク','姿勢・浮き'],
+goal:'速く泳ごうとしたときに少しでもフォームの崩れをなくしたいです。そのための普段の練習の仕方もお伺いしたいです。',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'21日14時〜 22日午前中 28日14時〜 3月1日午前中',
+notes:'',height:'156cm',
+followups:[{date:'2026/03/28',lessonType:'レギュラーレッスン（30分）6,000円',schedule:'4月5日 10時から10時30分',focusPoint:'平泳ぎー肘を曲げないでまっすぐ伸ばす、キックは切らないように蹴る',practiceLevel:'ある程度できている',swimFreq:'ほぼ毎日',practiceType:'1時間〜1時間30分のトレーニング, 30分程度のトレーニング, コーチがついての指導を受けている, 自分で考えて泳いでいる（自主練）',changeLevel:'少し感じる',currentIssue:'足首や膝がまっすぐに伸びない、力んでしまう',checkPoint:'キックのフォーム、ターン',newGoal:'少しでも抵抗を減らして泳ぎたい',freeNotes:''}],
+reviews:[
+{session:1,date:'2026/02/22',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'先生がキックの形を実際にやって見せてくださったことで、平泳ぎで足をもっと開くという意味がようやく理解できました。',
+motivation:'すぐに意識して練習してみたい',recommend:'自分のフォームがしっかり確認できていない方',comments:''},
+{session:2,date:'2026/04/05',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'水中動画をわかりやすく細かく作成して頂き、自分の意識と実際の動きの違いに気づくことができたことです。',
+motivation:'すぐに意識して練習してみたい',recommend:'大会に出て少しでも理想に近い泳ぎをしたい人',comments:''}
+]},
+{id:7,name:'伊佐治尚夫',furigana:'いさじ ひさお',age:'60歳以上',gender:'男性',
+contact:'https://line.me/ti/p/L6kHJ2JWdg',swimYears:'11年以上',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）','バタフライ'],bestTimes:'17秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','ターン','スタート'],
+goal:'欲を言えば2秒縮めたいです',
+health:'3年前に椎間板ヘルニア',videoConsent:true,dataConsent:true,
+schedule:'土曜日 11時から12時 平日なら休暇を取らないと行けないので相談',
+notes:'私は、スイミングスクールとかに行ったことないため我流です。ターンも下手なのでできればターンも見て欲しいです。',
+height:'175',
+followups:[{date:'2026/03/22',lessonType:'エクストラレッスン（60分）10,000円',schedule:'17時30分',focusPoint:'泡をかかないことと水面近くをキープする',practiceLevel:'',swimFreq:'週に1回〜2回',practiceType:'自分で考えて泳いでいる（自主練）',changeLevel:'少し感じる',currentIssue:'手の泡が消えにくい',checkPoint:'手の運び方と腰の上下動の抑制が出来てるか',newGoal:'50mで35秒 25mで13秒',freeNotes:'クイックターンを教えてほしい'}],
+reviews:[
+{session:1,date:'2026/02/14',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'思っていた以上に泡を掴んでいたこと。',
+motivation:'すぐに意識して練習してみたい',recommend:'目標タイムに向けて努力をしている人',
+comments:'とても有意義でした。改善が進んだ後に再度レッスンを受けたいです。ありがとうございました。次回は課題を克服するための練習方法も確認したいです。'},
+{session:2,date:'2026/04/05',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'ターンの仕方や練習方法など詳細に実践してご教示いただけるので非常に参考になりました。',
+motivation:'すぐに意識して練習してみたい',recommend:'練習量の割に結果が出ていない人に1度ご自身の泳ぎを確認されると良いかと思います。',
+comments:'大変熱のこもったご指導いただきましてありがとうございました。基本動作などが出来てないことと、水泳って意外と奥が深いと感じました。また、よろしくお願いいたします。'}
+]},
+{id:8,name:'水野真理子',furigana:'みずの まりこ',age:'50〜59歳',gender:'女性',
+contact:'09097144039',swimYears:'4〜10年',level:'中級（フォーム完全・楽に泳ぎたい）',
+strokes:['自由形（クロール）'],bestTimes:'25m クロール 26秒',
+lessonType:'相談して決めたい',improvements:['キック','持久力'],
+goal:'今の泳いでいるフォームを確認したい。',
+health:'ある ⇒ 今坐骨神経痛があるので、週に1回レッスンにだけ出ている',
+videoConsent:true,dataConsent:true,schedule:'3/1、8 またはそれ以降の日曜日',
+notes:'',height:'153',followups:[],
+reviews:[{session:1,date:'2026/03/01',satisfaction:'非常に満足',clarity:'分かりやすかった',
+impression:'クロールで腰がこんなにぶれていることに驚きました。',
+motivation:'すぐに意識して練習してみたい',recommend:'フォームや速度で伸び悩んでいる人',
+comments:'内容が素晴らしかったです。多くの人に受けてもらいたいと思いました。'}]
+},
+{id:9,name:'丹羽陽太',furigana:'にわ ようた',age:'30〜39歳',gender:'男性',
+contact:'08069142843',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）'],bestTimes:'100m自由形58秒2（短水路）',
+lessonType:'相談して決めたい',improvements:['ストローク','スタート'],
+goal:'50m自由形のタイムを上げたいです。',
+health:'左肩が緩くて、何度か亜脱臼の経験があります。',videoConsent:true,dataConsent:true,
+schedule:'3月2〜18,30,31日の平日は基本的に夕方以降は大丈夫です。遅くても問題ありません。（3/13日は行けません）3/7,14,21の土曜日もどの時間でも大丈夫なところが多いです。',
+notes:'',height:'176cm',followups:[],
+reviews:[{session:1,date:'2026/03/05',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'1つ1つの局面で自分にできそうなレベルで修正点を提案して頂いたことや、スタートの前足を左右入れ替える点にはびっくりしました。',
+motivation:'すぐに意識して練習してみたい',recommend:'今まで誰にも教わらずに泳いでいる人にとっては、大変良い機会になると思います。',
+comments:'ものすごく有意義な時間になりました。練習した上で、どのような変化があったのか再度撮影して頂きたいなと思いました。ありがとうございました。'}]
+},
+{id:10,name:'今枝香奈子',furigana:'いまえだ かなこ',age:'50〜59歳',gender:'女性',
+contact:'09025798539',swimYears:'4〜10年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）'],bestTimes:'25mクロール 20秒くらい',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['ストローク','キック','姿勢・浮き'],
+goal:'平泳ぎのキックがあまり進みません。手のかきもうまく力が入りません。まずは25mもっと早く泳げるようになりたいです。',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'3/14 (土) 16:30頃',
+notes:'時々、平泳ぎのキックで股関節が痛くなったり、膝が痛くなったりします。ケガ予防のためにどこをどんな風に鍛えたら良いかもアドバイスいただけたらと思います。',
+height:'155cm',followups:[],
+reviews:[{session:1,date:'2026/03/15',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'スタート時のストリームラインが取れてない事が分かりいつも出遅れている原因が分かったこと。',
+motivation:'すぐに意識して練習してみたい',recommend:'年齢と共に練習で泳げる距離が減ってきて大会に出るのをためらっている方にお勧めしたいです。',
+comments:'とても詳しく説明して頂きありがとうございました。機会を見つけて飛び込みからのスタートをレッスンして頂きたいと思います。'}]
+},
+{id:11,name:'長谷川タツエ',furigana:'はせがわ たつえ',age:'60歳以上',gender:'女性',
+contact:'',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）','バタフライ'],bestTimes:'23秒',
+lessonType:'レギュラーレッスン（30分）6,000円',improvements:['ストローク'],
+goal:'',health:'ない',videoConsent:true,dataConsent:true,
+schedule:'3月15日12時〜 何処でも',notes:'',height:'150cm',followups:[],
+reviews:[{session:1,date:'2026/03/16',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'左手左足の使い方 後肘の曲げ方',
+motivation:'すぐに意識して練習してみたい',recommend:'年齢で難しく感じてる方々等',
+comments:'これから 何人か声かけていきたいでね ご迷惑をお掛けしますがよろしくお願いします'}]
+},
+{id:12,name:'和田森ゆか美',furigana:'わだもり ゆかみ',age:'50〜59歳',gender:'女性',
+contact:'09050035291',swimYears:'4〜10年',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）','バタフライ','個人メドレー'],
+bestTimes:'25fr 14.2、100IM 1.18.69',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','スタート'],
+goal:'50frのタイムを縮めたいです。昨年のベストは、30.35です。欲を言えばバタフライも縮めたいです。',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'基本、土日いつでも大丈夫です。',
+notes:'高校まで水泳をしていて、49歳になってマスターズ登録して3年目です。30年まったく泳いでいなくて、最近の飛び込み方がよく分かりません。よろしくお願いいたします。',
+height:'160センチ',followups:[],
+reviews:[{session:1,date:'2026/05/24',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'すぐに実践できる改善ポイントと長期的にとりくむべき課題をわけて教えてくださったこと',
+motivation:'すぐに意識して練習してみたい',recommend:'もっとうまくなりたいと願っているすべての方に',
+comments:'今回、30分で4種目みていただいてものすごくお得感があり、ありがたかったです！ が、一方で、改善ポイントを教えてもらった直後にもう一回みていただいて方向性がただしいのかを確認していただく時間があると、心強かったような気もします。いずれにせよ、今後ともよろしくお願いいたします。'}]
+},
+{id:13,name:'荒木真也',furigana:'あらき しんや',age:'40〜49歳',gender:'男性',
+contact:'090-4066-6228',swimYears:'1〜3年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）','平泳ぎ'],
+bestTimes:'25mクロール 15.5秒／25m平泳ぎ 18.5秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート','持久力'],
+goal:'25＆50mタイム向上／浮き姿勢とフォームの習得',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'第一希望 日曜日9:00〜17:00／第二希望 土曜日14:30〜15:30（伊藤コーチの12:00〜14:00練習会の参加後）',
+notes:'3年前からジムで水泳を初めてクロールと平泳ぎを練習しています。今まできちんと教わったことがなく、youtubeなどを参考にやってきました。ご縁があって2月から伊藤コーチの練習会に参加させて頂き、先週林先生の個人レッスンのお話を聞いてぜひ受けてみたいと思いました。',
+height:'182cm',followups:[],
+reviews:[{session:1,date:'2026/04/18',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'飛び込みはバーを飛び越えるイメージを意識しただけで入水後の速度アップが実感できたことが印象に残りました。スタートはその後の水中動作とスイムに繋がる重要なシーンなので一番課題感が強かったこともあり、一番の収穫でした。',
+motivation:'すぐに意識して練習してみたい',recommend:'土曜日の伊藤コーチ練習会参加のメンバーは向上心も強いのできっと成果につながるレッスンだと思いました。',
+comments:'今日は平泳ぎのレッスンでしたが、今度はクロールのレッスン（1時間）を受けたいです。次回のレッスンの際にでも、平泳ぎとクロールの強化に繋がる筋トレやストレッチなどの陸トレについても教えて頂きたいです。いつもはアクトスのジムで筋トレしてその後プールでスイムしてるので、より効果的なトレーニングを積み重ねていきたいと思います。引き続きよろしくお願いします。本日はありがとうございました。'}]
+},
+{id:14,name:'川森ひなの',furigana:'かわもり ひなの',age:'〜19歳',gender:'女性',
+contact:'09056313778',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）'],
+bestTimes:'50m 30"90、100m 1\'07"14、200m 2\'24"44、400m 5\'06"69',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','ターン'],
+goal:'短水400mでのタイム短縮',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'4/26 15:00〜',
+notes:'',height:'153',followups:[],
+reviews:[{session:1,date:'2026/04/26',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'撮影しフォームを改善するアドバイスを受けて特にキック動作、呼吸をする際上半身だけを動かすというアドバイスを受けとても改善方法を見つけることができました',
+motivation:'すぐに意識して練習してみたい',recommend:'',comments:''}]
+},
+{id:15,name:'大庭範子',furigana:'おおば のりこ',age:'50〜59歳',gender:'女性',
+contact:'09061811274',swimYears:'1〜3年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）','背泳ぎ','個人メドレー'],bestTimes:'25mクロール 18\'9',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート','持久力'],
+goal:'タイムを縮めたい、飛び込みを改善したい、キャッチ動作が理解出来ていないので習いたい',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'土曜日午前または伊藤先生のレッスン終了後など',
+notes:'頑張ります！',height:'159',followups:[{date:'2026/07/15',lessonType:'エクストラレッスン（60分）10,000円',schedule:'7/18（土）11:00〜12:00',
+focusPoint:'背泳ぎの親指入水、平泳ぎのかきをガバっともってくる、バタフライのしゃもじの形、クロールのキック水面下がらない',
+practiceLevel:'',swimFreq:'ほぼ毎日',practiceType:'自分で考えて泳いでいる（自主練）',
+changeLevel:'少し感じる',
+currentIssue:'体力の無さ。100m×5と聞くだけで緊張してしまう',
+checkPoint:'クロールのフォームと、かきとキックのタイミングが合っているか、どこで力を入れるか、早くなる要素を探したい',
+newGoal:'50mで40秒になりたい、そして夢の30秒台にいきたい',
+freeNotes:'もし時間があれば飛び込みも見ていただき、アドバイスをいただけたら嬉しいです'}],
+reviews:[{session:1,date:'2026/05/31',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'先生が真剣にアドバイスを下さいましたこと。',
+motivation:'すぐに意識して練習してみたい',
+recommend:'タイムを少しずつ縮めていこうとしている方',
+comments:'とても丁寧な解説で、どこから改善したら良いのか、そこも教えていただけたので、練習の時にポイントを絞って練習したいとおもいました。'}]
+},
+{id:16,name:'正木みどり',furigana:'まさき みどり',age:'60歳以上',gender:'女性',
+contact:'LINEは繋げていただいています。ひらがなで まさきになります。',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['背泳ぎ'],bestTimes:'25m 背泳ぎ 24〜25秒 50m背泳ぎ 54〜55秒',
+lessonType:'相談して決めたい',
+improvements:['ストローク','キック','姿勢・浮き','ターン','スタート','持久力'],
+goal:'25m 50m のタイムを縮めたいです',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'6月14日 27日は東海学園の練習会に参加します。曜日は、週によってバラバラになります。',
+notes:'',height:'147cm',followups:[{date:'2026/07/15',lessonType:'エクストラレッスン（60分）10,000円',schedule:'7/18（土）14:00〜15:00',
+focusPoint:'入水後すぐに浅いところをかいていたので泡をかいていたため、深いところに入水して水をしっかりキャッチしてからかくよう気をつけています。フィニッシュまでしっかり水が押せるよう気をつけながら泳いでいます。',
+practiceLevel:'ある程度できている',swimFreq:'5〜6日/週',
+practiceType:'1時間〜1時間30分のトレーニング、コーチがついての指導を受けている、自分で考えて泳いでいる（自主練）',
+changeLevel:'分からない',
+currentIssue:'プル、キック、共に進みが悪くて、練習時に時間がかかりすぎる',
+checkPoint:'プル、キックが推進力を持てるように改善したいです。',
+newGoal:'10月の大会で200m背泳ぎでしっかり4分を切る',
+freeNotes:'プルの練習の時に手だけでかいているので、終わった後、上腕や肩に疲労が出る。'}],
+reviews:[{session:1,date:'2026/06/14',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'自分が泳いでいる状態と、自分でイメージしている状態の乖離が、画像を通してよく理解できました。',
+motivation:'すぐに意識して練習してみたい',recommend:'少しアドバイスを受けると、伸びそうな方',
+comments:''}]
+},
+{id:17,name:'永野清美',furigana:'ながの きよみ',age:'60歳以上',gender:'女性',
+contact:'LINEID kw5185 電話番号 090-1412-5860',swimYears:'4〜10年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）'],bestTimes:'25m クロール 17秒44',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','ターン','スタート'],
+goal:'クロールのプルの改善 飛び込み&浮き上がり 平泳ぎのタイミング等',
+health:'ない',videoConsent:true,dataConsent:true,schedule:'月曜日以外',
+notes:'ご連絡が遅くなりました。ご都合の良い日を教えて頂けると助かります。宜しくお願い致します',
+height:'157.5cm',followups:[],reviews:[{session:1,date:'2026/07/06',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'クロールの呼吸時、頭が上がって腰が下がっているという点は初めて指摘されました。',
+motivation:'すぐに意識して練習してみたい',recommend:'マスターズ頑張ってる友達全員',
+comments:'林先生にじっくりと説明して頂き本当によかったです。撮影も左右正面とあり、片方からではわからないところも発見できたりして有意義でした。ありがとうございました'}]},
+{id:18,name:'浅野孝子',furigana:'あさの たかこ',age:'60歳以上',gender:'女性',
+contact:'09070491288',swimYears:'11年以上',level:'中級（フォーム完全・楽に泳ぎたい）',
+strokes:['背泳ぎ'],bestTimes:'200背泳ぎ3分39秒01',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','スタート'],
+goal:'キャッチがとても下手で泡だらけです。泡のないように泳ぐとさらに遅くなるので結局いつもの泳ぎになってしまいます。空回りにならないストロークでしっかり進めるようになりたいです',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'水曜日 土曜日午後14時以降 日曜日',
+notes:'以前にも林先生のワンポイントで泡を指摘されてローリングをして深くかくようにと言われましたが、ローリングすると全身がぶれて遅くなります。スタートもどうにもうまくいきません。正木さんからお話を聞いてこちら教えて頂きました。よろしくお願い致します',
+height:'166cm',followups:[],reviews:[{session:1,date:'2026/07/06',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'動画を見ながらの指導',
+motivation:'すぐに意識して練習してみたい',recommend:'泳ぎを向上させたい人',
+comments:'昨日は動画の撮影から、それに基づいた丁寧なご指導まで、本当にありがとうございました。実際の自分の泳ぎを映像で見ながら解説していただいたことで、これまで曖昧だった左手の外をかいてる！は動画を見て、非常によく理解できました。言葉だけでなく、視覚的に納得できたことで、今後の練習の明確な目標ができました。また、確認のレッスンをお願いします。'}]},
+{id:19,name:'鈴木すみ子',furigana:'すずき すみこ',age:'60歳以上',gender:'女性',
+contact:'09066498934',swimYears:'4〜10年',level:'上級（タイム向上を目指している）',
+strokes:['自由形（クロール）','背泳ぎ'],bestTimes:'25mクロール19秒91　25m背泳ぎ26秒57',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート','持久力'],
+goal:'背泳ぎ25mのタイムを縮めたい。背泳ぎ50mをスタミナ切れにならず泳ぎきりたいです。',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'7/11(土) 14:00〜15:00',
+notes:'昨日送信しましたが、今日送られた友達の方にお返事はきてるようで、送信できていないのかと思って再送信させて頂きました。よろしくお願い致します。',
+height:'159cm',followups:[],reviews:[{session:1,date:'2026/07/12',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'背泳ぎ 手の入水の仕方と、入水後の手の形・肘の形',
+motivation:'すぐに意識して練習してみたい',recommend:'自己流で泳いでいる人',
+comments:'選手の方の動画も見せて頂けたので、どう直したら良いか とてもイメージがしやすかったです。'}]},
+{id:20,name:'稲垣万莉子',furigana:'イナガキ マリコ',age:'50〜59歳',gender:'女性',
+contact:'',swimYears:'4〜10年',level:'初級者（25m完泳が目標）',
+strokes:['自由形（クロール）','背泳ぎ'],bestTimes:'ありません',
+lessonType:'相談して決めたい',
+improvements:['ストローク','姿勢・浮き','呼吸動作'],
+goal:'喘息により肺活量ないので呼吸動作のレクチャー',
+health:'ある（膝・肩・腰 リハビリ中。膝は定期にヒアルロン酸注入中）',videoConsent:true,dataConsent:true,
+schedule:'特になし',
+notes:'傷病者ですいません！少しでも上達したいのでよろしくお願いします',
+height:'160cm',followups:[],reviews:[{session:1,date:'2026/07/13',satisfaction:'満足',clarity:'分かりやすかった',
+impression:'腰、膝の古傷で泳ぎが乱れて来た事がよく分かった',
+motivation:'すぐに意識して練習してみたい',recommend:'友人で自由型を楽に綺麗に泳ぎたい人',
+comments:'林さんの泳ぎ綺麗でした'}]},
+{id:21,name:'井戸田由佳',furigana:'いとだ ゆか',age:'60歳以上',gender:'女性',
+contact:'09054506148',swimYears:'4〜10年',level:'中級（フォーム修正・楽に泳ぎたい）',
+strokes:['バタフライ','個人メドレー'],bestTimes:'200個人メドレー 3:40.01',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','ターン','スタート'],
+goal:'ダッシュの際のクロールのフォーム改善',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'木曜日、土曜日',
+notes:'前回5月のバタフライのフォームチェックの際の先生のアドバイスを受けて、フォームを直しつつあります。チェックしていただけると嬉しいです。具体的には、頭入れ好き、手が身体から離れすぎ、腰が反る箇所がある、でした。どうぞよろしくお願いします。',
+height:'153.8cm',followups:[],reviews:[{session:1,date:'2026/07/12',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'自分では、すごく胸を張ったつもりが映像を見ると、それほどでもなく、自分の意識と、外から見た身体の動きにとても違いがあることがわかった',
+motivation:'すぐに意識して練習してみたい',recommend:'頑張りたいと思っている人全員！フォームを良くしたい、速くなりたい、などなど',
+comments:'素晴らしいレッスンをありがとうございました！最高でした'}]},
+{id:22,name:'永井直恵',furigana:'ながい なおえ',age:'50〜59歳',gender:'女性',
+contact:'09070350031',swimYears:'4〜10年',level:'中級（フォーム修正・楽に泳ぎたい）',
+strokes:['自由形（クロール）'],bestTimes:'25mクロール 22秒',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート','持久力'],
+goal:'早く上手に泳ぎたいです。',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'7/12 10:00〜',
+notes:'小学校の頃水泳教室に行っていました。2022年頃から成人向けの水泳教室に通っています。今は週2-3回位行っています。背泳ぎ、平泳ぎ、バタフライも練習していますが、中々上手くも早くもなりません。ゆっくり泳ぐ時は、キック後、足が浮くまでプルを行わないので、水の抵抗を感じませんが、スピードを上げようとすると、足が沈んだ状態でプルする事になり、抵抗を感じながら、泳いでいます。これを解消できると良いと思っています。',
+height:'154cm',followups:[],reviews:[{session:1,date:'2026/07/12',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'固定カメラではなく、先生の目線で映像化頂き解説頂けたのでとてもわかりやすく納得できました。お陰様で目標が明確になりました',
+motivation:'すぐに意識して練習してみたい',recommend:'自分と同じく水泳を一生の運動としたいと思っている人に勧めたいです',
+comments:'丁寧にご説明頂きありがとうございました。練習を重ねて是非またご評価頂きたいと思います。また林先生の泳ぎを生で見れたのは感激しました。'}]},
+{id:23,name:'宇田川旭',furigana:'うだかわ あきら',age:'60歳以上',gender:'男性',
+contact:'https://line.me/ti/p/yhMqw3FfAJ',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['平泳ぎ'],bestTimes:'50m平泳ぎ47秒57',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['姿勢・浮き'],
+goal:'50m平泳ぎのタイムを2秒程度縮めたい',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'日曜日10時',
+notes:'ゆっくり泳ぐ時は、キック後、足が浮くまでプルを行わないので、水の抵抗を感じませんが、スピードを上げようとすると、足が沈んだ状態でプルする事になり、抵抗を感じながら泳いでいます。これを解消できると良いと思っています。',
+height:'167cm',followups:[],reviews:[{session:1,date:'2026/07/12',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'キックの際、足を引きすぎて時間がかかる為、その間に腰が沈む様が、画像でしっかり認識されました。また、頭を上げ過ぎる為、後傾になる事も、画像から認識できました。',
+motivation:'特に変わらない',recommend:'課題を意識していても、解決できない人',
+comments:'本日は、ありがとうございました。伊藤先生を含めいろいろなアドバイスを頂きますが、何故ダメなのか、ダメな事によってどのようなデメリットが生まれるのか、ダメな事を解消する為、具体的にどのようにすれば良いのかと突っ込んだ指導を受ける事が無かった為、林先生のご指導は、本当に良く理解できました。会社でも部下に対して、"こうして"、"それではダメ"と宇田川も言っていると、今日は、この点でも猛省しております。'}]},
+{id:24,name:'奥村治郎',furigana:'おくむらじろう',age:'50〜59歳',gender:'男性',
+contact:'https://line.me/ti/p/KfWFZ1WQtu',swimYears:'4〜10年',level:'中級（フォーム修正・楽に泳ぎたい）',
+strokes:['自由形（クロール）'],bestTimes:'25mクロール 21秒',
+lessonType:'レギュラーレッスン（30分）6,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作'],
+goal:'左右のストロークの切り替えというかバランスがぎこちないので滑らかに切り替えられるようにしたいです。息継ぎで腰が沈んでいるように感じるのも悩みです。ゆっくり泳ぐことができず連続で泳ぐのは100〜150mです。',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'7/12 10:00',
+notes:'飛び込みができないので壁キックでスタートしたいです。',
+height:'163cm',followups:[],reviews:[{session:1,date:'2026/07/12',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
+impression:'撮影後の先生からの説明がとても分かりやすかったです。',
+motivation:'すぐに意識して練習してみたい',recommend:'ある程度泳げて、更に上を目指す人にお勧めしたいです。',
+comments:'レベルの低い私なんかに時間を使って頂き、逆に申し訳ない感じでした。今回教えて頂いた事をしっかり練習に活かしたいです。機会があれば、成長してまた先生にお会い出来れば嬉しく思います。ありがとうございました。'}]}
+];
+
+// === CLOUD SYNC (jsonblob.com) ===
+const BLOB_API='https://jsonblob.com/api/jsonBlob';
+let blobId=window.location.hash.slice(1)||null;
+let syncStatus='ok';
+let saveTimer=null;
+
+const LESSON_DATES_V1={
+  1:[{count:1,date:'2026/2/14',day:'土',memo:'クロール'},{count:2,date:'2026/5/24',day:'日',memo:'クロール、バタフライ'}],
+  2:[{count:1,date:'2026/2/22',day:'日',memo:'クロール'}],
+  3:[{count:1,date:'2026/2/21',day:'土',memo:'クロール'},{count:2,date:'2026/4/26',day:'日',memo:'クロール'}],
+  4:[{count:1,date:'2026/2/21',day:'土',memo:'クロール'},{count:2,date:'2026/4/12',day:'日',memo:'クロール'}],
+  5:[{count:1,date:'2026/2/14',day:'土',memo:'背泳ぎ'},{count:2,date:'2026/4/25',day:'土',memo:'背泳ぎ'}],
+  6:[{count:1,date:'2026/2/22',day:'日',memo:'平泳ぎ'},{count:2,date:'2026/4/5',day:'日',memo:'平泳ぎ'}],
+  7:[{count:1,date:'2026/2/21',day:'土',memo:'クロール、バタフライ'},{count:2,date:'2026/4/4',day:'土',memo:'クロール、バタフライ'},{count:3,date:'2026/6/13',day:'土',memo:'クロール　スタート'}],
+  8:[{count:1,date:'2026/3/1',day:'日',memo:'バタフライ、背泳ぎ、平泳ぎ、クロール'}],
+  9:[{count:1,date:'2026/3/4',day:'水',memo:'クロール'}],
+  10:[{count:1,date:'2026/3/14',day:'土',memo:'平泳ぎ'}],
+  11:[{count:1,date:'2026/3/15',day:'日',memo:'クロール、バタフライ'}],
+  12:[{count:1,date:'2026/5/2',day:'土',memo:'クロール'}],
+  13:[{count:1,date:'2026/4/18',day:'土',memo:'平泳ぎ'},{count:2,date:'2026/4/29',day:'水',memo:'クロール'}],
+  14:[{count:1,date:'2026/4/26',day:'日',memo:'クロール'}],
+  15:[{count:1,date:'2026/5/30',day:'土',memo:'背泳ぎ、クロール'},{count:2,date:'2026/7/18',day:'土',memo:'背泳ぎ、クロール'}],
+  16:[{count:1,date:'2026/6/14',day:'日',memo:'クロール、バタフライ'}],
+  17:[{count:1,date:'2026/7/5',day:'日',memo:'クロール'}],
+  18:[{count:1,date:'2026/7/5',day:'日',memo:'クロール、背泳ぎ'}],
+  19:[{count:1,date:'2026/7/11',day:'土',memo:''}],
+  20:[{count:1,date:'2026/7/12',day:'日',memo:''}],
+  21:[{count:1,date:'2026/7/11',day:'土',memo:''}],
+  22:[{count:1,date:'2026/7/12',day:'日',memo:''}],
+  23:[{count:1,date:'2026/7/12',day:'日',memo:''}],
+  24:[{count:1,date:'2026/7/12',day:'日',memo:''}]
+};
+
+let clients=defaultClients;
+let selectedId=null,editingId=null,editingFollowup=null,editingReview=null,activeSessionTab=0,searchQuery='';
+let nextId=1;
+
+function updateSyncUI(status,text){
+  syncStatus=status;
+  const dot=document.getElementById('sync-dot');
+  const txt=document.getElementById('sync-text');
+  if(dot){dot.className='sync-dot '+status;}
+  if(txt){txt.textContent=text||'';}
+}
+
+function fetchWithTimeout(url,opts,ms=4000){
+  const ctrl=new AbortController();
+  const tm=setTimeout(()=>ctrl.abort(),ms);
+  return fetch(url,{...opts,signal:ctrl.signal}).finally(()=>clearTimeout(tm));
+}
+
+function loadLocal(){
+  clients=JSON.parse(localStorage.getItem('ssd_clients_v3')||'null')||defaultClients;
+  // reviews・lessonDatesがlocalStorageにない場合はdefaultClients/LESSON_DATES_V1からマージ
+  clients.forEach(c=>{
+    if(!c.reviews||c.reviews.length===0){
+      const def=defaultClients.find(d=>d.id===c.id);
+      if(def&&def.reviews&&def.reviews.length>0) c.reviews=def.reviews;
+    }
+    if(!c.lessonDates||c.lessonDates.length===0){
+      if(LESSON_DATES_V1[c.id]) c.lessonDates=LESSON_DATES_V1[c.id];
+    }
+    // followupsもdefaultClientsからマージ（日付で重複チェック）
+    const def2=defaultClients.find(d=>d.id===c.id);
+    if(def2&&def2.followups&&def2.followups.length>0){
+      if(!c.followups) c.followups=[];
+      def2.followups.forEach(df=>{
+        if(!c.followups.find(f=>f.date===df.date)) c.followups.push(df);
+      });
+    }
+  });
+  localStorage.setItem('ssd_clients_v3',JSON.stringify(clients));
+  incomeData=JSON.parse(localStorage.getItem('ssd_income_v1')||'null')||defaultIncome;
+  // defaultIncomeにある月・項目がlocalStorageにない場合はマージする
+  defaultIncome.forEach(dm=>{
+    let m=incomeData.find(x=>x.month===dm.month);
+    if(!m){incomeData.push(JSON.parse(JSON.stringify(dm)));return;}
+    ['kanshi','lesson','other'].forEach(cat=>{
+      (dm[cat]||[]).forEach(e=>{
+        if(!m[cat]) m[cat]=[];
+        if(!m[cat].find(x=>x.date===e.date&&x.desc===e.desc)) m[cat].push(e);
+      });
+    });
+  });
+  localStorage.setItem('ssd_income_v1',JSON.stringify(incomeData));
+  expenseData=JSON.parse(localStorage.getItem('ssd_expense_v1')||'null')||defaultExpenses;
+}
+
+function finishInit(){
+  nextId=Math.max(...clients.map(c=>c.id),0)+1;
+  document.getElementById('loading-overlay').style.display='none';
+  document.getElementById('sync-bar').style.display='flex';
+  render();
+}
+
+const isLocal=location.protocol==='file:';
+
+async function initCloud(){
+  if(isLocal){
+    loadLocal();
+    updateSyncUI('ok','ローカルモード（データはこのPC内に保存されます）');
+    document.getElementById('sync-buttons').style.display='none';
+    document.getElementById('local-cloud-buttons').style.display='flex';
+    finishInit();
+    return;
+  }
+  try{
+    if(blobId){
+      updateSyncUI('saving','読み込み中...');
+      const res=await fetchWithTimeout(BLOB_API+'/'+blobId,{});
+      if(res.ok){
+        const data=await res.json();
+        clients=data.clients||defaultClients;
+        incomeData=data.income||defaultIncome;
+        expenseData=data.expenses||defaultExpenses;
+        updateSyncUI('ok','クラウド同期済み');
+      }else{
+        loadLocal();blobId=null;
+        updateSyncUI('error','読み込み失敗 - ローカルデータを使用');
+      }
+    }else{
+      loadLocal();
+      updateSyncUI('saving','クラウド作成中...');
+      try{
+        const body=JSON.stringify({clients,income:incomeData,expenses:expenseData});
+        const res=await fetchWithTimeout(BLOB_API,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body});
+        if(res.ok){
+          const loc=res.headers.get('Location')||res.headers.get('x-jsonblob')||'';
+          blobId=loc.split('/').pop();
+          if(blobId){window.location.hash=blobId;updateSyncUI('ok','クラウド同期済み');}
+          else updateSyncUI('error','ローカルで動作中');
+        }else updateSyncUI('error','ローカルで動作中');
+      }catch(e2){updateSyncUI('error','ローカルで動作中');}
+    }
+  }catch(e){
+    console.error(e);
+    loadLocal();
+    updateSyncUI('error','オフライン - ローカルデータを使用');
+  }
+  finishInit();
+}
+
+function saveToCloud(){
+  localStorage.setItem('ssd_clients_v3',JSON.stringify(clients));
+  localStorage.setItem('ssd_income_v1',JSON.stringify(incomeData));
+  localStorage.setItem('ssd_expense_v1',JSON.stringify(expenseData));
+  if(!blobId)return;
+  if(saveTimer)clearTimeout(saveTimer);
+  updateSyncUI('saving','保存中...');
+  saveTimer=setTimeout(async()=>{
+    try{
+      await fetch(BLOB_API+'/'+blobId,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','Accept':'application/json'},
+        body:JSON.stringify({clients,income:incomeData,expenses:expenseData})
+      });
+      updateSyncUI('ok','クラウド同期済み');
+    }catch(e){
+      console.error(e);
+      updateSyncUI('error','同期失敗');
+    }
+  },800);
+}
+
+function copyDataToClipboard(){
+  const data=JSON.stringify({clients,income:incomeData,expenses:expenseData});
+  navigator.clipboard.writeText(data).then(()=>{
+    const div=document.getElementById('local-cloud-url');
+    div.textContent='✅ コピー完了！次の手順：';
+    div.innerHTML='✅ コピー完了！<br>① NetlifyのURLを開く<br>② 右上の「データ取り込み」ボタンを押す<br>③ 貼り付けて「クラウドへ保存」を押す';
+  }).catch(()=>{
+    const data2=JSON.stringify({clients,income:incomeData,expenses:expenseData});
+    const ta=document.createElement('textarea');
+    ta.value=data2;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    document.getElementById('local-cloud-url').innerHTML='✅ コピー完了！<br>① NetlifyのURLを開く<br>② 右上の「データ取り込み」ボタンを押す<br>③ 貼り付けて「クラウドへ保存」を押す';
+  });
+}
+
+function showImportDialog(){
+  document.getElementById('import-dialog').style.display='flex';
+  document.getElementById('import-json').value='';
+  document.getElementById('import-status').textContent='';
+}
+
+async function importAndSave(){
+  const raw=document.getElementById('import-json').value.trim();
+  const status=document.getElementById('import-status');
+  if(!raw){status.textContent='⚠️ データを貼り付けてください';return;}
+  let data;
+  try{data=JSON.parse(raw);}catch(e){status.textContent='⚠️ データの形式が正しくありません';return;}
+  if(!data.clients){status.textContent='⚠️ 正しいデータではありません';return;}
+  clients=data.clients;
+  incomeData=data.income||defaultIncome;
+  expenseData=data.expenses||defaultExpenses;
+  localStorage.setItem('ssd_clients_v3',JSON.stringify(clients));
+  localStorage.setItem('ssd_income_v1',JSON.stringify(incomeData));
+  localStorage.setItem('ssd_expense_v1',JSON.stringify(expenseData));
+  status.innerHTML='✅ データを取り込みました！クラウドへ保存中...';
+  try{
+    const body=JSON.stringify({clients,income:incomeData,expenses:expenseData});
+    let res;
+    if(blobId){
+      res=await fetch(BLOB_API+'/'+blobId,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body});
+    }else{
+      res=await fetch(BLOB_API,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body});
+      if(res.ok){
+        const loc=res.headers.get('Location')||'';
+        blobId=loc.split('/').pop();
+        if(blobId)window.location.hash=blobId;
+      }
+    }
+    if(res&&res.ok){
+      status.innerHTML='✅ クラウドへ保存完了！URLをコピーして共有できます。';
+      updateSyncUI('ok','クラウド同期済み');
+      setTimeout(()=>{document.getElementById('import-dialog').style.display='none';render();},1500);
+    }else{
+      status.innerHTML='✅ データ取り込み完了（クラウド保存は失敗）<br><span style="color:#888;font-size:11px;">このブラウザでは表示できます。「共有URL」ボタンから再試行してください。</span>';
+      setTimeout(()=>{document.getElementById('import-dialog').style.display='none';render();},2000);
+    }
+  }catch(e){
+    status.innerHTML='✅ データ取り込み完了（クラウド接続エラー）<br><span style="color:#888;font-size:11px;">このブラウザでは表示できます。しばらくしてから「共有URL」ボタンを押してください。</span>';
+    setTimeout(()=>{document.getElementById('import-dialog').style.display='none';render();},2500);
+  }
+}
+
+async function pushLocalToCloud(){
+  const urlDiv=document.getElementById('local-cloud-url');
+  const btn=document.querySelector('#local-cloud-buttons button');
+  btn.disabled=true;
+  btn.textContent='送信中...';
+  urlDiv.textContent='';
+  try{
+    const body=JSON.stringify({clients,income:incomeData,expenses:expenseData});
+    const savedId=localStorage.getItem('ssd_blob_id')||null;
+    let res;
+    if(savedId){
+      res=await fetch(BLOB_API+'/'+savedId,{method:'PUT',headers:{'Content-Type':'application/json','Accept':'application/json'},body});
+      if(res.ok){
+        const url=location.href.split('#')[0]+'#'+savedId;
+        urlDiv.innerHTML='✅ 保存完了！<br>共有URL：<a href="'+url+'" target="_blank" style="color:#185FA5;word-break:break-all;">'+url+'</a>';
+        btn.textContent='✅ 保存完了';return;
+      }
+    }
+    res=await fetch(BLOB_API,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body});
+    if(res.ok){
+      const loc=res.headers.get('Location')||res.headers.get('x-jsonblob')||'';
+      const newId=loc.split('/').pop();
+      if(newId){
+        localStorage.setItem('ssd_blob_id',newId);
+        const url=location.href.split('#')[0]+'#'+newId;
+        urlDiv.innerHTML='✅ 保存完了！<br>共有URL：<a href="'+url+'" target="_blank" style="color:#185FA5;word-break:break-all;">'+url+'</a><br><span style="color:#888;">※このURLをNetlifyのアプリのURLの#以降に付けて共有してください</span>';
+        btn.textContent='✅ 保存完了';
+      }else{urlDiv.textContent='⚠️ ID取得失敗';btn.textContent='クラウドへ保存';}
+    }else{urlDiv.textContent='⚠️ 送信失敗（'+res.status+'）';btn.textContent='クラウドへ保存';}
+  }catch(e){
+    urlDiv.textContent='⚠️ エラー：'+e.message;
+    btn.textContent='クラウドへ保存';
+  }
+  btn.disabled=false;
+}
+
+async function refreshFromCloud(){
+  if(!blobId){alert('クラウドに接続されていません');return}
+  updateSyncUI('saving','更新中...');
+  try{
+    const res=await fetch(BLOB_API+'/'+blobId);
+    if(res.ok){
+      const data=await res.json();
+      clients=data.clients||clients;
+      incomeData=data.income||incomeData;
+      expenseData=data.expenses||expenseData;
+      nextId=Math.max(...clients.map(c=>c.id),0)+1;
+      updateSyncUI('ok','最新データに更新しました');
+      render();
+      if(currentTopTab==='business')renderBusiness();
+    }else{updateSyncUI('error','更新失敗');}
+  }catch(e){updateSyncUI('error','通信エラー');}
+}
+
+function showShareDialog(){
+  const d=document.getElementById('share-dialog');
+  if(d.style.display==='none'){
+    const url=window.location.origin+window.location.pathname+'#'+blobId;
+    d.style.display='block';
+    d.innerHTML=`<div class="share-box">
+      <div style="font-size:13px;font-weight:500;"><i class="ti ti-share" aria-hidden="true"></i> 共有URL</div>
+      <div style="font-size:12px;color:#666;margin-top:4px;">このURLをLINEなどで送ると、他の人も最新データを閲覧・編集できます。</div>
+      <input class="share-url" id="share-url-input" value="${url}" readonly onclick="this.select()">
+      <div style="display:flex;gap:6px;">
+        <button class="btn-primary" style="font-size:12px;" onclick="copyShareUrl()"><i class="ti ti-copy" aria-hidden="true"></i> URLをコピー</button>
+        <button style="font-size:12px;" onclick="document.getElementById('share-dialog').style.display='none'">閉じる</button>
+      </div>
+    </div>`;
+  }else d.style.display='none';
+}
+
+function copyShareUrl(){
+  const input=document.getElementById('share-url-input');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(()=>{
+    const btn=event.target.closest('button');
+    btn.textContent='コピーしました！';
+    setTimeout(()=>{btn.innerHTML='<i class="ti ti-copy" aria-hidden="true"></i> URLをコピー';},2000);
+  }).catch(()=>{document.execCommand('copy');});
+}
+
+function save(){saveToCloud()}
+
+let ldEditState={};
+
+function startLdEdit(clientId,idx,key){
+  ldEditState={[key]:idx};
+  render();
+  setTimeout(()=>{const el=document.getElementById('ld_date');if(el)el.focus();},50);
+}
+function cancelLdEdit(key){
+  delete ldEditState[key];
+  render();
+}
+function saveLessonDate(clientId,idx){
+  const c=clients.find(x=>x.id===clientId);
+  c.lessonDates[idx]={
+    count:parseInt(document.getElementById('ld_count').value)||idx+1,
+    date:document.getElementById('ld_date').value.trim(),
+    day:document.getElementById('ld_day').value.trim(),
+    memo:document.getElementById('ld_memo').value.trim()
+  };
+  ldEditState={};
+  save();render();
+}
+
+function addLessonDate(clientId){
+  const c=clients.find(x=>x.id===clientId);
+  if(!c.lessonDates)c.lessonDates=[];
+  const nextCount=c.lessonDates.length+1;
+  const countStr=prompt('何回目のレッスンですか？\n例：1',String(nextCount));
+  if(countStr===null)return;
+  const dateStr=prompt('レッスン日を入力してください\n例：2026/7/11');
+  if(!dateStr)return;
+  const dayStr=prompt('曜日を入力してください\n例：土');
+  if(dayStr===null)return;
+  const memo=prompt('メモ（任意）\n例：クロール・キック中心')||'';
+  c.lessonDates.push({count:parseInt(countStr)||nextCount,date:dateStr.trim(),day:dayStr.trim(),memo:memo.trim()});
+  save();render();
+}
+
+function deleteLessonDate(clientId,idx){
+  if(!confirm('この記録を削除しますか？'))return;
+  const c=clients.find(x=>x.id===clientId);
+  c.lessonDates.splice(idx,1);
+  save();render();
+}
+function getInitials(n){return n.slice(0,2)}
+function getColor(id){return COLORS[id%COLORS.length]}
+function esc(s){return(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+
+function render(){
+  const app=document.getElementById('app');
+  if(editingReview!==null){renderReviewForm(app);return}
+  if(editingFollowup!==null){renderFollowupForm(app);return}
+  if(editingId!==null){renderForm(app);return}
+  if(selectedId!==null){renderDetail(app);return}
+  renderList(app);
+}
+
+let lessonListView='list';
+let calendarYear=new Date().getFullYear();
+let calendarMonth=new Date().getMonth()+1;
+
+function renderList(app){
+  const withFollowup=clients.filter(c=>c.followups&&c.followups.length>0).length;
+  const reviewCount=clients.reduce((s,c)=>s+(c.reviews||[]).length,0);
+  const viewBtns=`
+    <div style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;">
+      <button onclick="lessonListView='list';render();" style="${lessonListView==='list'?'background:#E6F1FB;color:#185FA5;border-color:#85B7EB;':''}font-size:12px;padding:6px 12px;"><i class="ti ti-list" aria-hidden="true"></i> 一覧</button>
+      <button onclick="lessonListView='alpha';render();" style="${lessonListView==='alpha'?'background:#E6F1FB;color:#185FA5;border-color:#85B7EB;':''}font-size:12px;padding:6px 12px;"><i class="ti ti-sort-ascending-letters" aria-hidden="true"></i> あいうえお順</button>
+      <button onclick="lessonListView='monthly';render();" style="${lessonListView==='monthly'?'background:#E6F1FB;color:#185FA5;border-color:#85B7EB;':''}font-size:12px;padding:6px 12px;"><i class="ti ti-calendar-month" aria-hidden="true"></i> 月別一覧</button>
+      <button onclick="lessonListView='calendar';render();" style="${lessonListView==='calendar'?'background:#E6F1FB;color:#185FA5;border-color:#85B7EB;':''}font-size:12px;padding:6px 12px;"><i class="ti ti-calendar" aria-hidden="true"></i> カレンダー</button>
+    </div>`;
+  const stats=`
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-label">登録人数</div><div class="stat-value">${clients.length}</div></div>
+      <div class="stat"><div class="stat-label">2回目以上受講</div><div class="stat-value">${withFollowup}</div></div>
+      <div class="stat"><div class="stat-label">感想数</div><div class="stat-value">${reviewCount}</div></div>
+      <div class="stat"><div class="stat-label">健康上の注意</div><div class="stat-value">${clients.filter(c=>c.health!=='ない'&&c.health!=='なし'&&c.health).length}</div></div>
+    </div>`;
+  if(lessonListView==='calendar'){app.innerHTML=stats+viewBtns+renderCalendarView();return;}
+  if(lessonListView==='monthly'){app.innerHTML=stats+viewBtns+renderMonthlyView();return;}
+
+  const filtered=clients.filter(c=>c.name.includes(searchQuery)||c.furigana.includes(searchQuery));
+  let sorted=[...filtered];
+  if(lessonListView==='alpha') sorted.sort((a,b)=>a.furigana.localeCompare(b.furigana,'ja'));
+
+  app.innerHTML=`${stats}
+    <div class="toolbar">
+      <input class="search-box" type="text" placeholder="名前で検索..." value="${searchQuery}" oninput="searchQuery=this.value;render();">
+      <button class="btn-primary" onclick="editingId='new';render();"><i class="ti ti-plus" aria-hidden="true"></i> 新規登録</button>
+    </div>
+    ${viewBtns}
+    ${sorted.map(c=>{
+      const col=getColor(c.id);
+      const fCount=(c.followups||[]).length;
+      const rCount=(c.reviews||[]).length;
+      const totalSessions=1+fCount;
+      const ldCount=(c.lessonDates||[]).length;
+      return`<div class="list-item" onclick="selectedId=${c.id};activeSessionTab=0;render();">
+        <div class="avatar" style="background:${col.bg};color:${col.color};">${getInitials(c.name)}</div>
+        <div style="flex:1;">
+          <div class="name">${c.name} <span style="font-size:12px;color:#aaa;font-weight:400;">${c.furigana}</span>
+            ${ldCount>0?`<span class="badge-count" style="background:#E6F1FB;color:#185FA5;margin-left:4px;">${ldCount}回実施</span>`:''}
+            ${fCount>0?`<span class="badge-count" style="background:#E1F5EE;color:#085041;margin-left:4px;">${totalSessions}回</span>`:''}
+            ${rCount>0?`<span class="badge-count" style="background:#FBEAF0;color:#72243E;margin-left:2px;"><i class="ti ti-star" style="font-size:10px;" aria-hidden="true"></i>${rCount}</span>`:''}
+          </div>
+          <div class="meta">${c.age} / ${c.gender} / ${c.level}</div>
+          <div style="margin-top:4px;">${c.strokes.map(s=>'<span class="badge" style="background:#f0f0ee;color:#666;">'+s+'</span>').join('')}</div>
+        </div>
+        <i class="ti ti-chevron-right" style="color:#ccc;" aria-hidden="true"></i>
+      </div>`;
+    }).join('')}
+    ${sorted.length===0?'<p class="empty-msg">該当する受講者がいません</p>':''}`;
+}
+
+function parseDate(str){
+  if(!str)return null;
+  // supports 2026/7/11, 2026-07-11, 7/11 etc.
+  const m=str.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if(m)return{year:+m[1],month:+m[2],day:+m[3]};
+  const m2=str.match(/(\d{1,2})[\/\-](\d{1,2})/);
+  if(m2)return{year:calendarYear,month:+m2[1],day:+m2[2]};
+  return null;
+}
+
+function renderCalendarView(){
+  const y=calendarYear,mo=calendarMonth;
+  const firstDay=new Date(y,mo-1,1).getDay();
+  const daysInMonth=new Date(y,mo,0).getDate();
+  // collect all lesson events for this month
+  const events={};
+  clients.forEach(c=>{
+    (c.lessonDates||[]).forEach(ld=>{
+      const d=parseDate(ld.date);
+      if(!d)return;
+      if(d.year===y&&d.month===mo){
+        if(!events[d.day])events[d.day]=[];
+        events[d.day].push({name:c.name,id:c.id,col:getColor(c.id)});
+      }
+    });
+  });
+  const dow=['日','月','火','水','木','金','土'];
+  let cells='';
+  for(let i=0;i<firstDay;i++) cells+=`<td style="background:#fafafa;border:.5px solid #eee;"></td>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const today=new Date();
+    const isToday=today.getFullYear()===y&&today.getMonth()+1===mo&&today.getDate()===d;
+    const dayEvents=events[d]||[];
+    cells+=`<td style="vertical-align:top;border:.5px solid #eee;padding:4px;min-height:60px;${isToday?'background:#FFF8E1;':'background:#fff;'}">
+      <div style="font-size:11px;font-weight:${isToday?'600':'400'};color:${isToday?'#D85A30':'#444'};margin-bottom:2px;">${d}</div>
+      ${dayEvents.map(e=>`<div onclick="selectedId=${e.id};activeSessionTab=0;lessonListView='list';render();" style="cursor:pointer;font-size:10px;background:${e.col.bg};color:${e.col.color};border-radius:4px;padding:1px 4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.name}</div>`).join('')}
+    </td>`;
+    if((firstDay+d)%7===0&&d<daysInMonth) cells+=`</tr><tr>`;
+  }
+  const remain=(firstDay+daysInMonth)%7;
+  if(remain>0) for(let i=remain;i<7;i++) cells+=`<td style="background:#fafafa;border:.5px solid #eee;"></td>`;
+
+  return`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <button onclick="calendarMonth--;if(calendarMonth<1){calendarMonth=12;calendarYear--;}render();" style="font-size:13px;padding:6px 14px;"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+      <div style="font-weight:500;font-size:16px;">${y}年${mo}月</div>
+      <button onclick="calendarMonth++;if(calendarMonth>12){calendarMonth=1;calendarYear++;}render();" style="font-size:13px;padding:6px 14px;"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;table-layout:fixed;">
+      <tr>${dow.map((d,i)=>`<th style="padding:6px 2px;font-size:11px;color:${i===0?'#c0392b':i===6?'#185FA5':'#888'};text-align:center;border-bottom:2px solid #ddd;">${d}</th>`).join('')}</tr>
+      <tr>${cells}</tr>
+    </table></div>
+    <p style="font-size:11px;color:#aaa;margin-top:8px;">※名前をクリックすると詳細が表示されます</p>`;
+}
+
+function renderMonthlyView(){
+  // collect all lesson dates from all clients
+  const allEvents=[];
+  clients.forEach(c=>{
+    (c.lessonDates||[]).forEach(ld=>{
+      const d=parseDate(ld.date);
+      allEvents.push({client:c,ld,parsed:d});
+    });
+  });
+  // group by year-month
+  const groups={};
+  allEvents.forEach(ev=>{
+    if(!ev.parsed)return;
+    const key=`${ev.parsed.year}-${String(ev.parsed.month).padStart(2,'0')}`;
+    if(!groups[key])groups[key]=[];
+    groups[key].push(ev);
+  });
+  // sort keys desc
+  const keys=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
+  if(keys.length===0)return`<p class="empty-msg">レッスン実施日が登録されていません</p>`;
+  return keys.map(key=>{
+    const [y,m]=key.split('-');
+    const items=groups[key].sort((a,b)=>(a.parsed.day-b.parsed.day)||a.client.furigana.localeCompare(b.client.furigana,'ja'));
+    return`<div class="month-card" style="margin-bottom:12px;">
+      <div style="font-weight:500;font-size:15px;margin-bottom:10px;color:#185FA5;"><i class="ti ti-calendar-month" aria-hidden="true" style="margin-right:4px;"></i>${+y}年${+m}月 <span style="font-size:12px;color:#aaa;font-weight:400;">（${items.length}件）</span></div>
+      ${items.map(ev=>{
+        const col=getColor(ev.client.id);
+        return`<div style="display:flex;align-items:center;gap:10px;padding:7px 4px;border-bottom:.5px solid #f0f0f0;cursor:pointer;" onclick="selectedId=${ev.client.id};activeSessionTab=0;lessonListView='list';render();">
+          <div style="min-width:36px;text-align:center;font-size:13px;font-weight:500;color:#555;">${ev.parsed.day}日<span style="font-size:11px;color:#aaa;">${ev.ld.day?'('+ev.ld.day+')':''}</span></div>
+          <div style="min-width:22px;text-align:center;font-size:11px;background:#E6F1FB;color:#185FA5;border-radius:4px;padding:1px 5px;">${ev.ld.count||''}回</div>
+          <div class="avatar" style="width:28px;height:28px;font-size:11px;background:${col.bg};color:${col.color};">${getInitials(ev.client.name)}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:500;">${ev.client.name}</div>
+            ${ev.ld.memo?`<div style="font-size:11px;color:#888;">${ev.ld.memo}</div>`:''}
+          </div>
+          <i class="ti ti-chevron-right" style="color:#ccc;font-size:13px;" aria-hidden="true"></i>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+}
+
+function renderDetail(app){
+  const c=clients.find(x=>x.id===selectedId);
+  if(!c){selectedId=null;render();return}
+  const col=getColor(c.id);
+  const followups=c.followups||[];
+  const reviews=c.reviews||[];
+  const totalSessions=1+followups.length;
+
+  let tabs=`<div class="session-tabs">`;
+  tabs+=`<div class="session-tab${activeSessionTab===0?' active':''}" onclick="activeSessionTab=0;render();">
+    <i class="ti ti-clipboard" aria-hidden="true" style="font-size:14px;"></i> 1回目</div>`;
+  followups.forEach((_,i)=>{
+    tabs+=`<div class="session-tab${activeSessionTab===i+1?' active':''}" onclick="activeSessionTab=${i+1};render();">
+      <i class="ti ti-repeat" aria-hidden="true" style="font-size:14px;"></i> ${i+2}回目</div>`;
+  });
+  tabs+=`</div>`;
+
+  let content='';
+  if(activeSessionTab===0) content=renderSession1(c,col)+renderReviewBlock(reviews.find(r=>r.session===1),0);
+  else{
+    const fIdx=activeSessionTab-1;
+    if(followups[fIdx]) content=renderSession2(c,followups[fIdx],fIdx,col)+renderReviewBlock(reviews.find(r=>r.session===activeSessionTab+1),activeSessionTab);
+  }
+
+  app.innerHTML=`
+    <button class="back-link" onclick="selectedId=null;render();">
+      <i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る
+    </button>
+    <div class="card">
+      <div class="card-header">
+        <div class="avatar" style="background:${col.bg};color:${col.color};width:52px;height:52px;font-size:18px;">${getInitials(c.name)}</div>
+        <div style="flex:1;">
+          <div style="font-weight:500;font-size:17px;">${c.name}
+            <span class="badge-count" style="background:${col.bg};color:${col.color};margin-left:6px;font-size:12px;">全${totalSessions}回受講</span>
+          </div>
+          <div style="font-size:13px;color:#888;">${c.furigana} / ${c.age} / ${c.gender}${c.height?' / '+c.height:''}</div>
+        </div>
+        <button onclick="editingId=${c.id};render();"><i class="ti ti-edit" aria-hidden="true"></i> 編集</button>
+      </div>
+      <div class="section-title"><i class="ti ti-phone" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>連絡先</div>
+      <div class="field"><span class="field-label">LINE/電話</span><span class="field-value">${c.contact}</span></div>
+      <div class="section-title"><i class="ti ti-trophy" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>水泳歴・競技背景</div>
+      <div class="field"><span class="field-label">水泳歴</span><span class="field-value">${c.swimYears}</span></div>
+      <div class="field"><span class="field-label">泳力レベル</span><span class="field-value">${c.level}</span></div>
+      <div class="field"><span class="field-label">主な泳法</span><span class="field-value">${c.strokes.map(s=>'<span class="badge" style="background:'+col.bg+';color:'+col.color+';">'+s+'</span>').join('')}</span></div>
+      <div class="field"><span class="field-label">ベストタイム</span><span class="field-value">${c.bestTimes||'未記入'}</span></div>
+      <div class="section-title"><i class="ti ti-heart" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>健康状態</div>
+      <div class="field"><span class="field-label">ケガ・持病等</span><span class="field-value ${c.health!=='ない'&&c.health!=='なし'?'health-warn':''}">${c.health}</span></div>
+      <div class="section-title"><i class="ti ti-camera" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>撮影・同意</div>
+      <div class="field"><span class="field-label">動画撮影</span><span class="field-value">${c.videoConsent?'<span class="consent-ok">同意済</span>':'<span class="consent-ng">未同意</span>'}</span></div>
+      <div class="field"><span class="field-label">データ取扱</span><span class="field-value">${c.dataConsent?'<span class="consent-ok">理解済</span>':'<span class="consent-ng">未確認</span>'}</span></div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="font-weight:500;font-size:14px;"><i class="ti ti-calendar-check" aria-hidden="true" style="margin-right:4px;color:#185FA5;"></i>レッスン実施日</div>
+        <button class="btn-primary" style="font-size:11px;padding:4px 10px;" onclick="addLessonDate(${c.id})"><i class="ti ti-plus" aria-hidden="true"></i> 日付を追加</button>
+      </div>
+      ${(()=>{
+        const dates=c.lessonDates||[];
+        const editKey=`ld_${c.id}`;
+        const editIdx=ldEditState[editKey];
+        if(dates.length===0 && editIdx===undefined) return '<p style="font-size:12px;color:#aaa;">まだ記録がありません</p>';
+        let rows=dates.map((ld,li)=>{
+          if(editIdx===li) return `<tr style="background:#f0f7ff;">
+            <td style="padding:4px 5px;border-bottom:.5px solid #ddd;text-align:center;">
+              <input id="ld_count" value="${ld.count||li+1}" type="number" style="width:38px;font-size:12px;padding:3px 4px;border:.5px solid #85B7EB;border-radius:4px;text-align:center;">
+            </td>
+            <td style="padding:4px 5px;border-bottom:.5px solid #ddd;">
+              <input id="ld_date" value="${ld.date}" style="width:90px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;">
+            </td>
+            <td style="padding:4px 5px;border-bottom:.5px solid #ddd;text-align:center;">
+              <input id="ld_day" value="${ld.day||''}" style="width:30px;font-size:12px;padding:3px 4px;border:.5px solid #85B7EB;border-radius:4px;text-align:center;">
+            </td>
+            <td style="padding:4px 5px;border-bottom:.5px solid #ddd;">
+              <input id="ld_memo" value="${ld.memo||''}" style="width:100%;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;">
+            </td>
+            <td style="padding:4px 5px;border-bottom:.5px solid #ddd;white-space:nowrap;">
+              <button style="font-size:11px;padding:2px 8px;background:#EAF3DE;color:#3B6D11;border-color:#97C459;" onclick="saveLessonDate(${c.id},${li})">保存</button>
+              <button style="font-size:11px;padding:2px 6px;margin-left:2px;" onclick="cancelLdEdit('${editKey}')">✕</button>
+            </td>
+          </tr>`;
+          return `<tr>
+            <td style="padding:5px 6px;border-bottom:.5px solid #f0f0f0;text-align:center;">
+              <span style="background:#E6F1FB;color:#185FA5;border-radius:6px;padding:2px 7px;font-size:12px;font-weight:500;">${ld.count||li+1}回目</span>
+            </td>
+            <td style="padding:5px 6px;border-bottom:.5px solid #f0f0f0;">${ld.date}</td>
+            <td style="padding:5px 6px;border-bottom:.5px solid #f0f0f0;text-align:center;color:#555;">${ld.day||''}</td>
+            <td style="padding:5px 6px;border-bottom:.5px solid #f0f0f0;color:#555;">${ld.memo||''}</td>
+            <td style="padding:5px 6px;border-bottom:.5px solid #f0f0f0;text-align:center;white-space:nowrap;">
+              <i class="ti ti-pencil" style="font-size:13px;color:#aaa;cursor:pointer;margin-right:6px;" onclick="startLdEdit(${c.id},${li},'${editKey}')" aria-hidden="true"></i>
+              <i class="ti ti-trash" style="font-size:13px;color:#ccc;cursor:pointer;" onclick="deleteLessonDate(${c.id},${li})" aria-hidden="true"></i>
+            </td>
+          </tr>`;
+        }).join('');
+        return `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <tr>
+            <th style="text-align:center;padding:4px 6px;font-size:11px;color:#888;border-bottom:1px solid #eee;width:48px;">回数</th>
+            <th style="text-align:left;padding:4px 6px;font-size:11px;color:#888;border-bottom:1px solid #eee;width:96px;">日付</th>
+            <th style="text-align:center;padding:4px 6px;font-size:11px;color:#888;border-bottom:1px solid #eee;width:36px;">曜日</th>
+            <th style="text-align:left;padding:4px 6px;font-size:11px;color:#888;border-bottom:1px solid #eee;">メモ</th>
+            <th style="width:60px;border-bottom:1px solid #eee;"></th>
+          </tr>${rows}</table>`;
+      })()}
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:16px 0 8px;">
+      <div style="font-weight:500;font-size:15px;"><i class="ti ti-history" aria-hidden="true" style="margin-right:4px;"></i>レッスン受講履歴</div>
+      <div style="display:flex;gap:4px;">
+        <button class="btn-success" onclick="editingFollowup='new';render();"><i class="ti ti-plus" aria-hidden="true"></i> 次回事前</button>
+        <button style="background:#FBEAF0;color:#72243E;border-color:#ED93B1;" onclick="editingReview='new';render();"><i class="ti ti-star" aria-hidden="true"></i> 感想追加</button>
+      </div>
+    </div>
+    ${tabs}
+    <div class="session-content">${content}</div>
+    <button class="btn-danger" style="margin-top:8px;" onclick="if(confirm('${esc(c.name)}さんのデータを削除しますか？')){clients=clients.filter(x=>x.id!==${c.id});save();selectedId=null;render();}">
+      <i class="ti ti-trash" aria-hidden="true"></i> この受講者を削除
+    </button>`;
+}
+
+function renderSession1(c,col){
+  return`
+    <div style="font-size:12px;color:#888;margin-bottom:12px;"><i class="ti ti-clipboard" aria-hidden="true"></i> 初回アンケート</div>
+    <div class="field"><span class="field-label">受講希望</span><span class="field-value">${c.lessonType}</span></div>
+    <div class="field"><span class="field-label">改善ポイント</span><span class="field-value">${c.improvements.map(s=>'<span class="badge" style="background:#FAEEDA;color:#633806;">'+s+'</span>').join('')}</span></div>
+    ${c.goal?'<div class="field" style="flex-direction:column;gap:4px;"><span class="field-label">目標</span><div class="free-text">'+c.goal+'</div></div>':''}
+    <div class="field"><span class="field-label">希望日時</span><span class="field-value">${c.schedule||'未記入'}</span></div>
+    ${c.notes?'<div class="field" style="flex-direction:column;gap:4px;"><span class="field-label">自由記述</span><div class="free-text">'+c.notes+'</div></div>':''}`;
+}
+
+function renderSession2(c,f,fIdx,col){
+  const changeBadge=f.changeLevel==='感じる'?'<span class="progress-badge" style="background:#EAF3DE;color:#3B6D11;">感じる</span>':f.changeLevel==='少し感じる'?'<span class="progress-badge" style="background:#FAEEDA;color:#633806;">少し感じる</span>':'<span class="progress-badge" style="background:#f0f0ee;color:#666;">'+f.changeLevel+'</span>';
+  const practiceBadge=f.practiceLevel==='かなり意識してできている'?'<span class="progress-badge" style="background:#EAF3DE;color:#3B6D11;">かなり意識してできている</span>':f.practiceLevel==='ある程度できている'?'<span class="progress-badge" style="background:#E6F1FB;color:#185FA5;">ある程度できている</span>':'<span class="progress-badge" style="background:#f0f0ee;color:#666;">'+(f.practiceLevel||'未回答')+'</span>';
+  let compareGoal='';
+  if(fIdx===0&&c.goal){
+    compareGoal=`<div style="font-size:12px;color:#888;margin:12px 0 6px;">目標の変化</div>
+      <div class="compare-row"><div class="compare-col"><div class="col-label">1回目の目標</div>${c.goal}</div>
+      <div class="compare-col"><div class="col-label">${fIdx+2}回目の目標</div>${f.newGoal||'未記入'}</div></div>`;
+  }
+  return`
+    <div style="font-size:12px;color:#888;margin-bottom:12px;"><i class="ti ti-repeat" aria-hidden="true"></i> ${fIdx+2}回目アンケート <span style="margin-left:8px;">${f.date||''}</span></div>
+    <div class="field"><span class="field-label">受講レッスン</span><span class="field-value">${f.lessonType}</span></div>
+    <div class="field"><span class="field-label">希望日時</span><span class="field-value">${f.schedule}</span></div>
+    <div class="section-title" style="margin-top:14px;"><i class="ti ti-arrow-back-up" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>前回レッスン後の変化</div>
+    <div class="field" style="flex-direction:column;gap:4px;"><span class="field-label">意識していたポイント</span><div class="free-text">${f.focusPoint}</div></div>
+    <div class="field"><span class="field-label">実践度</span><span class="field-value">${practiceBadge}</span></div>
+    <div class="section-title"><i class="ti ti-run" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>練習状況</div>
+    <div class="field"><span class="field-label">練習頻度</span><span class="field-value">${f.swimFreq}</span></div>
+    <div class="field" style="flex-direction:column;gap:4px;"><span class="field-label">練習内容</span><div class="free-text">${f.practiceType}</div></div>
+    <div class="section-title"><i class="ti ti-chart-line" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>自分の変化の実感</div>
+    <div class="field"><span class="field-label">変化の実感</span><span class="field-value">${changeBadge}</span></div>
+    <div class="section-title"><i class="ti ti-alert-circle" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>現在の悩み・課題</div>
+    <div class="free-text">${f.currentIssue||'未記入'}</div>
+    <div class="section-title"><i class="ti ti-eye" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>今回見てほしいポイント</div>
+    <div class="free-text">${f.checkPoint||'未記入'}</div>
+    <div class="section-title"><i class="ti ti-target" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>目標</div>
+    <div class="free-text">${f.newGoal||'未記入'}</div>
+    ${compareGoal}
+    ${f.freeNotes?'<div class="section-title"><i class="ti ti-message" aria-hidden="true" style="font-size:14px;margin-right:4px;"></i>自由記述</div><div class="free-text">'+f.freeNotes+'</div>':''}
+    <div style="margin-top:16px;display:flex;gap:8px;">
+      <button onclick="editingFollowup=${fIdx};render();"><i class="ti ti-edit" aria-hidden="true"></i> この回を編集</button>
+      <button class="btn-danger" onclick="if(confirm('${fIdx+2}回目のアンケートを削除しますか？')){const c=clients.find(x=>x.id===${c.id});c.followups.splice(${fIdx},1);save();activeSessionTab=0;render();}"><i class="ti ti-trash" aria-hidden="true"></i> 削除</button>
+    </div>`;
+}
+
+function renderReviewBlock(review,sessionIdx){
+  if(!review) return`<div style="margin-top:16px;padding:12px;background:#f8f8f6;border-radius:8px;text-align:center;font-size:13px;color:#aaa;">この回の感想はまだありません</div>`;
+  const satStars=review.satisfaction==='非常に満足'?'★★★★★':review.satisfaction==='満足'?'★★★★☆':'★★★☆☆';
+  return`
+    <div class="review-card">
+      <div class="rv-header"><i class="ti ti-star" aria-hidden="true" style="margin-right:4px;"></i>レッスン後の感想 <span style="font-weight:400;font-size:11px;color:#993556;margin-left:8px;">${review.date||''}</span></div>
+      <div class="rv-field"><div class="rv-label">満足度</div><div class="star-rating">${satStars}</div><span style="font-size:12px;color:#72243E;margin-left:6px;">${review.satisfaction}</span></div>
+      <div class="rv-field"><div class="rv-label">解説の分かりやすさ</div><div class="rv-value">${review.clarity}</div></div>
+      ${review.impression?'<div class="rv-field"><div class="rv-label">一番印象に残ったこと</div><div class="rv-value">'+review.impression+'</div></div>':''}
+      <div class="rv-field"><div class="rv-label">今後の練習への意識</div><div class="rv-value">${review.motivation}</div></div>
+      ${review.recommend?'<div class="rv-field"><div class="rv-label">おすすめしたい方</div><div class="rv-value">'+review.recommend+'</div></div>':''}
+      ${review.comments?'<div class="rv-field"><div class="rv-label">ご意見・ご要望</div><div class="rv-value">'+review.comments+'</div></div>':''}
+      <div style="margin-top:10px;display:flex;gap:6px;">
+        <button style="font-size:11px;padding:4px 10px;background:#fff;" onclick="editReviewBySession(${review.session})"><i class="ti ti-edit" aria-hidden="true"></i> 編集</button>
+        <button style="font-size:11px;padding:4px 10px;background:#fff;color:#A32D2D;border-color:#F09595;" onclick="deleteReviewBySession(${review.session})"><i class="ti ti-trash" aria-hidden="true"></i> 削除</button>
+      </div>
+    </div>`;
+}
+
+function editReviewBySession(session){
+  const c=clients.find(x=>x.id===selectedId);
+  const idx=(c.reviews||[]).findIndex(r=>r.session===session);
+  if(idx>=0){editingReview=idx;render();}
+}
+function deleteReviewBySession(session){
+  if(!confirm('この感想を削除しますか？'))return;
+  const c=clients.find(x=>x.id===selectedId);
+  c.reviews=c.reviews.filter(r=>r.session!==session);
+  save();render();
+}
+
+function renderReviewForm(app){
+  const c=clients.find(x=>x.id===selectedId);
+  if(!c.reviews)c.reviews=[];
+  const isNew=editingReview==='new';
+  const r=isNew?{session:activeSessionTab+1,date:'',satisfaction:'非常に満足',clarity:'とても分かりやすかった',impression:'',motivation:'すぐに意識して練習してみたい',recommend:'',comments:''}:c.reviews[editingReview];
+  const satOpts=['非常に満足','満足','普通','不満'];
+  const claOpts=['とても分かりやすかった','分かりやすかった','普通','分かりにくかった'];
+  const motOpts=['すぐに意識して練習してみたい','少し意識が変わった','特に変わらない'];
+  app.innerHTML=`
+    <button class="back-link" onclick="editingReview=null;render();"><i class="ti ti-arrow-left" aria-hidden="true"></i> 詳細に戻る</button>
+    <div class="card">
+      <div style="font-weight:500;font-size:17px;margin-bottom:4px;">${c.name}さん — 感想${isNew?'追加':'編集'}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px;">第${r.session}回目のレッスン</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="form-group"><label>回（第N回目）</label><input type="number" id="fr-session" value="${r.session}" min="1"></div>
+        <div class="form-group"><label>日付</label><input type="date" id="fr-date" value="${(r.date||'').replace(/\//g,'-')}"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="form-group"><label>満足度</label><select id="fr-satisfaction">${satOpts.map(o=>'<option'+(r.satisfaction===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+        <div class="form-group"><label>解説の分かりやすさ</label><select id="fr-clarity">${claOpts.map(o=>'<option'+(r.clarity===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      </div>
+      <div class="form-group"><label>一番印象に残ったこと・役に立ったこと</label><textarea id="fr-impression">${r.impression||''}</textarea></div>
+      <div class="form-group"><label>今後の練習への意識</label><select id="fr-motivation">${motOpts.map(o=>'<option'+(r.motivation===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="form-group"><label>おすすめしたい方</label><textarea id="fr-recommend" style="min-height:40px;">${r.recommend||''}</textarea></div>
+      <div class="form-group"><label>ご意見・ご要望</label><textarea id="fr-comments">${r.comments||''}</textarea></div>
+      <div class="form-actions">
+        <button onclick="editingReview=null;render();">キャンセル</button>
+        <button class="btn-primary" onclick="saveReview()"><i class="ti ti-check" aria-hidden="true"></i> ${isNew?'追加':'保存'}</button>
+      </div>
+    </div>`;
+}
+
+function saveReview(){
+  const c=clients.find(x=>x.id===selectedId);
+  if(!c.reviews)c.reviews=[];
+  const data={
+    session:parseInt(document.getElementById('fr-session').value)||1,
+    date:document.getElementById('fr-date').value.replace(/-/g,'/'),
+    satisfaction:document.getElementById('fr-satisfaction').value,
+    clarity:document.getElementById('fr-clarity').value,
+    impression:document.getElementById('fr-impression').value.trim(),
+    motivation:document.getElementById('fr-motivation').value,
+    recommend:document.getElementById('fr-recommend').value.trim(),
+    comments:document.getElementById('fr-comments').value.trim()
+  };
+  if(editingReview==='new') c.reviews.push(data);
+  else c.reviews[editingReview]=data;
+  save();editingReview=null;
+  activeSessionTab=data.session-1;
+  render();
+}
+
+function renderFollowupForm(app){
+  const c=clients.find(x=>x.id===selectedId);
+  const isNew=editingFollowup==='new';
+  const f=isNew?{date:'',lessonType:'',schedule:'',focusPoint:'',practiceLevel:'',swimFreq:'',practiceType:'',changeLevel:'',currentIssue:'',checkPoint:'',newGoal:'',freeNotes:''}:(c.followups||[])[editingFollowup];
+  const lessonOpts=['レギュラーレッスン（30分）6,000円','エクストラレッスン（60分）10,000円','相談して決めたい'];
+  const practiceLevels=['','かなり意識してできている','ある程度できている','あまりできていない','まったくできていない'];
+  const freqOpts=['','ほぼ毎日','2日に1回','週に3〜4回','週に1回〜2回','月に数回','ほとんど泳いでいない'];
+  const changeLevels=['','感じる','少し感じる','あまり感じない','感じない'];
+  app.innerHTML=`
+    <button class="back-link" onclick="editingFollowup=null;render();"><i class="ti ti-arrow-left" aria-hidden="true"></i> 詳細に戻る</button>
+    <div class="card">
+      <div style="font-weight:500;font-size:17px;margin-bottom:4px;">${c.name}さん — ${isNew?'次回':''}事前アンケート${isNew?'追加':'編集'}</div>
+      <div style="font-size:12px;color:#888;margin-bottom:16px;">${isNew?'第'+(((c.followups||[]).length)+2)+'回目':'第'+((editingFollowup)+2)+'回目'}</div>
+      <div class="section-title">基本情報</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="form-group"><label>アンケート日</label><input type="date" id="ff-date" value="${(f.date||'').replace(/\//g,'-')}"></div>
+        <div class="form-group"><label>受講レッスン</label><select id="ff-lessonType">${lessonOpts.map(o=>'<option'+(f.lessonType===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      </div>
+      <div class="form-group"><label>希望日時</label><input id="ff-schedule" value="${esc(f.schedule)}"></div>
+      <div class="section-title">前回レッスン後の変化</div>
+      <div class="form-group"><label>意識していたポイント</label><textarea id="ff-focusPoint">${f.focusPoint||''}</textarea></div>
+      <div class="form-group"><label>実践度</label><select id="ff-practiceLevel">${practiceLevels.map(o=>'<option'+(f.practiceLevel===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="section-title">練習状況</div>
+      <div class="form-group"><label>練習頻度</label><select id="ff-swimFreq">${freqOpts.map(o=>'<option'+(f.swimFreq===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="form-group"><label>練習内容</label><textarea id="ff-practiceType">${f.practiceType||''}</textarea></div>
+      <div class="section-title">変化の実感</div>
+      <div class="form-group"><label>フォームや泳ぎに変化を感じていますか？</label><select id="ff-changeLevel">${changeLevels.map(o=>'<option'+(f.changeLevel===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="section-title">現在の悩み・課題</div>
+      <div class="form-group"><label>特に気になっている点</label><textarea id="ff-currentIssue">${f.currentIssue||''}</textarea></div>
+      <div class="section-title">今回のレッスンで見てほしいこと</div>
+      <div class="form-group"><label>確認したいポイント</label><textarea id="ff-checkPoint">${f.checkPoint||''}</textarea></div>
+      <div class="section-title">目標</div>
+      <div class="form-group"><label>タイムや技術、大会などの目標</label><textarea id="ff-newGoal">${f.newGoal||''}</textarea></div>
+      <div class="section-title">自由記述</div>
+      <div class="form-group"><label>その他</label><textarea id="ff-freeNotes">${f.freeNotes||''}</textarea></div>
+      <div class="form-actions">
+        <button onclick="editingFollowup=null;render();">キャンセル</button>
+        <button class="btn-primary" onclick="saveFollowup()"><i class="ti ti-check" aria-hidden="true"></i> ${isNew?'追加':'保存'}</button>
+      </div>
+    </div>`;
+}
+
+function saveFollowup(){
+  const c=clients.find(x=>x.id===selectedId);
+  if(!c.followups)c.followups=[];
+  const data={
+    date:document.getElementById('ff-date').value.replace(/-/g,'/'),
+    lessonType:document.getElementById('ff-lessonType').value,
+    schedule:document.getElementById('ff-schedule').value.trim(),
+    focusPoint:document.getElementById('ff-focusPoint').value.trim(),
+    practiceLevel:document.getElementById('ff-practiceLevel').value,
+    swimFreq:document.getElementById('ff-swimFreq').value,
+    practiceType:document.getElementById('ff-practiceType').value.trim(),
+    changeLevel:document.getElementById('ff-changeLevel').value,
+    currentIssue:document.getElementById('ff-currentIssue').value.trim(),
+    checkPoint:document.getElementById('ff-checkPoint').value.trim(),
+    newGoal:document.getElementById('ff-newGoal').value.trim(),
+    freeNotes:document.getElementById('ff-freeNotes').value.trim()
+  };
+  if(editingFollowup==='new'){c.followups.push(data);activeSessionTab=c.followups.length;}
+  else{c.followups[editingFollowup]=data;activeSessionTab=editingFollowup+1;}
+  save();editingFollowup=null;render();
+}
+
+function renderForm(app){
+  const isNew=editingId==='new';
+  const c=isNew?{name:'',furigana:'',age:'',gender:'',contact:'',swimYears:'',level:'',strokes:[],bestTimes:'',lessonType:'',improvements:[],goal:'',health:'',videoConsent:false,dataConsent:false,schedule:'',notes:'',height:''}:clients.find(x=>x.id===editingId);
+  const ageOpts=['','〜19歳','20〜29歳','30〜39歳','40〜49歳','50〜59歳','60歳以上'];
+  const genderOpts=['男性','女性','その他'];
+  const swimYearOpts=['','1年未満','1〜3年','4〜10年','11年以上'];
+  const levelOpts=['','初心者','中級（フォーム完全・楽に泳ぎたい）','上級（タイム向上を目指している）','競技経験あり（大会出場）'];
+  const strokeOpts=['自由形（クロール）','平泳ぎ','背泳ぎ','バタフライ','個人メドレー'];
+  const improvOpts=['ストローク','キック','息継ぎ','姿勢・浮き','呼吸動作','ターン','スタート','持久力'];
+  const lessonOpts=['','フォームチェック','レギュラーレッスン（30分）6,000円','エクストラレッスン（60分）10,000円','相談して決めたい'];
+  app.innerHTML=`
+    <button class="back-link" onclick="editingId=null;render();"><i class="ti ti-arrow-left" aria-hidden="true"></i> ${isNew?'一覧に戻る':'詳細に戻る'}</button>
+    <div class="card">
+      <div style="font-weight:500;font-size:17px;margin-bottom:16px;">${isNew?'新規受講者登録':'受講者情報を編集'}</div>
+      <div class="section-title">基本情報</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="form-group"><label>お名前</label><input id="f-name" value="${esc(c.name)}"></div>
+        <div class="form-group"><label>ふりがな</label><input id="f-furigana" value="${esc(c.furigana)}"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div class="form-group"><label>年齢</label><select id="f-age">${ageOpts.map(o=>'<option'+(c.age===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+        <div class="form-group"><label>性別</label><select id="f-gender">${genderOpts.map(o=>'<option'+(c.gender===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+        <div class="form-group"><label>身長</label><input id="f-height" value="${esc(c.height)}" placeholder="例: 170cm"></div>
+      </div>
+      <div class="form-group"><label>連絡先 (LINE/電話番号)</label><input id="f-contact" value="${esc(c.contact)}"></div>
+      <div class="section-title">水泳歴・競技背景</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div class="form-group"><label>水泳歴</label><select id="f-swimYears">${swimYearOpts.map(o=>'<option'+(c.swimYears===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+        <div class="form-group"><label>泳力レベル</label><select id="f-level">${levelOpts.map(o=>'<option'+(c.level===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      </div>
+      <div class="form-group"><label>主な泳法</label><div class="checkbox-group">${strokeOpts.map(s=>'<label><input type="checkbox" class="f-stroke" value="'+s+'"'+(c.strokes.includes(s)?' checked':'')+'> '+s+'</label>').join('')}</div></div>
+      <div class="form-group"><label>ベストタイム</label><input id="f-bestTimes" value="${esc(c.bestTimes)}" placeholder="例: 50Mクロール 30秒"></div>
+      <div class="section-title">初回レッスン内容</div>
+      <div class="form-group"><label>受講希望レッスン</label><select id="f-lessonType">${lessonOpts.map(o=>'<option'+(c.lessonType===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="form-group"><label>改善したいポイント</label><div class="checkbox-group">${improvOpts.map(s=>'<label><input type="checkbox" class="f-improv" value="'+s+'"'+(c.improvements.includes(s)?' checked':'')+'> '+s+'</label>').join('')}</div></div>
+      <div class="form-group"><label>目標</label><textarea id="f-goal">${c.goal||''}</textarea></div>
+      <div class="section-title">健康状態</div>
+      <div class="form-group"><label>ケガ・持病・運動制限</label><input id="f-health" value="${esc(c.health)}" placeholder="ない場合は「ない」"></div>
+      <div class="section-title">撮影・同意</div>
+      <div class="checkbox-group" style="margin-bottom:12px;">
+        <label><input type="checkbox" id="f-videoConsent"${c.videoConsent?' checked':''}> 動画撮影に同意</label>
+        <label><input type="checkbox" id="f-dataConsent"${c.dataConsent?' checked':''}> データ取扱いを理解</label>
+      </div>
+      <div class="section-title">日程・その他</div>
+      <div class="form-group"><label>希望日時</label><textarea id="f-schedule">${c.schedule||''}</textarea></div>
+      <div class="form-group"><label>自由記述</label><textarea id="f-notes">${c.notes||''}</textarea></div>
+      <div class="form-actions">
+        <button onclick="editingId=null;render();">キャンセル</button>
+        <button class="btn-primary" onclick="saveForm()"><i class="ti ti-check" aria-hidden="true"></i> ${isNew?'登録':'保存'}</button>
+      </div>
+    </div>`;
+}
+
+function saveForm(){
+  const data={
+    name:document.getElementById('f-name').value.trim(),
+    furigana:document.getElementById('f-furigana').value.trim(),
+    age:document.getElementById('f-age').value,
+    gender:document.getElementById('f-gender').value,
+    contact:document.getElementById('f-contact').value.trim(),
+    swimYears:document.getElementById('f-swimYears').value,
+    level:document.getElementById('f-level').value,
+    strokes:[...document.querySelectorAll('.f-stroke:checked')].map(e=>e.value),
+    bestTimes:document.getElementById('f-bestTimes').value.trim(),
+    lessonType:document.getElementById('f-lessonType').value,
+    improvements:[...document.querySelectorAll('.f-improv:checked')].map(e=>e.value),
+    goal:document.getElementById('f-goal').value.trim(),
+    health:document.getElementById('f-health').value.trim(),
+    videoConsent:document.getElementById('f-videoConsent').checked,
+    dataConsent:document.getElementById('f-dataConsent').checked,
+    schedule:document.getElementById('f-schedule').value.trim(),
+    notes:document.getElementById('f-notes').value.trim(),
+    height:document.getElementById('f-height').value.trim()
+  };
+  if(!data.name){alert('名前を入力してください');return}
+  if(editingId==='new'){
+    data.id=nextId++;data.followups=[];data.reviews=[];
+    clients.push(data);selectedId=data.id;
+  }else{
+    const idx=clients.findIndex(x=>x.id===editingId);
+    data.id=editingId;data.followups=clients[idx].followups||[];data.reviews=clients[idx].reviews||[];
+    clients[idx]=data;selectedId=editingId;
+  }
+  save();editingId=null;render();
+}
+
+// === TOP TAB SWITCHING ===
+let currentTopTab='lesson';
+let businessSubTab='income';
+function switchTopTab(tab){
+  currentTopTab=tab;
+  document.getElementById('tab-lesson').classList.toggle('active',tab==='lesson');
+  document.getElementById('tab-business').classList.toggle('active',tab==='business');
+  document.getElementById('app').style.display=tab==='lesson'?'':'none';
+  document.getElementById('app-business').style.display=tab==='business'?'':'none';
+  if(tab==='business') renderBusinessWrapper();
+}
+function switchBusinessSub(sub){
+  businessSubTab=sub;
+  renderBusinessWrapper();
+}
+function renderBusinessWrapper(){
+  const app=document.getElementById('app-business');
+  const subTabs=`<div style="display:flex;gap:4px;margin-bottom:16px;">
+    <button class="top-tab${businessSubTab==='income'?' active':''}" style="border-bottom:${businessSubTab==='income'?'3px solid #3B6D11':'3px solid transparent'};padding:8px 20px;" onclick="switchBusinessSub('income')"><i class="ti ti-coin" aria-hidden="true"></i> 収入</button>
+    <button class="top-tab${businessSubTab==='expense'?' active':''}" style="border-bottom:${businessSubTab==='expense'?'3px solid #A32D2D':'3px solid transparent'};padding:8px 20px;" onclick="switchBusinessSub('expense')"><i class="ti ti-receipt" aria-hidden="true"></i> 経費</button>
+  </div><div id="biz-content"></div>`;
+  app.innerHTML=subTabs;
+  if(businessSubTab==='income') renderBusiness();
+  else renderExpenses();
+}
+
+// === INCOME DATA ===
+const defaultIncome=[
+{month:'2026-01',kanshi:[
+  {date:'1/3',day:'土',time:'10:00〜12:00',amount:3000,desc:'マスターズ'},
+  {date:'1/24',day:'土',time:'11:00〜13:00',amount:3000,desc:'マスターズ'},
+  {date:'1/25',day:'土',time:'10:00〜12:00',amount:3000,desc:'マスターズ'}
+],lesson:[],other:[]},
+{month:'2026-02',kanshi:[
+  {date:'2/7',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'2/14',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'2/21',day:'土',time:'12:00〜15:00',amount:3000,desc:'日進西高'},
+  {date:'2/28',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'}
+],lesson:[
+  {date:'2/14',day:'土',time:'9:15〜10:30',amount:3000,desc:'ワンポイント（青山）'},
+  {date:'2/14',day:'土',time:'9:30〜10:45',amount:3000,desc:'ワンポイント（杉村）'},
+  {date:'2/21',day:'土',time:'11:00〜12:00',amount:10000,desc:'エキストラ（伊佐治）'},
+  {date:'2/21',day:'土',time:'15:00〜16:00',amount:10000,desc:'エキストラ（古田・石井）'},
+  {date:'2/22',day:'日',time:'9:30〜10:00',amount:6000,desc:'レギュラー（見崎）'},
+  {date:'2/22',day:'日',time:'14:00〜15:00',amount:10000,desc:'エキストラ（榊原）'}
+],other:[]},
+{month:'2026-03',kanshi:[
+  {date:'3/1',day:'日',time:'10:00〜12:00',amount:3000,desc:'マスターズ'},
+  {date:'3/7',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'3/14',day:'土',time:'12:00〜15:00',amount:3000,desc:'日進西高'},
+  {date:'3/27',day:'金',time:'12:00〜14:00',amount:3000,desc:'日進西高'}
+],lesson:[
+  {date:'3/2',day:'日',time:'13:00〜14:00',amount:10000,desc:'エキストラ（水野）'},
+  {date:'3/4',day:'水',time:'17:30〜18:30',amount:10000,desc:'エキストラ（丹羽）'},
+  {date:'3/14',day:'土',time:'16:30〜17:00',amount:6000,desc:'レギュラー（今枝）'},
+  {date:'3/15',day:'日',time:'12:00〜13:00',amount:10000,desc:'エキストラ（長谷川・横山）'},
+  {date:'3/28',day:'土',time:'17:00〜18:00',amount:6000,desc:'レギュラー（伊佐治②）'}
+],other:[]},
+{month:'2026-04',kanshi:[
+  {date:'4/4',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'4/11',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'4/18',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'4/25',day:'土',time:'11:00〜13:00',amount:3000,desc:'マスターズ'}
+],lesson:[
+  {date:'4/4',day:'土',time:'16:00〜17:00',amount:10000,desc:'エキストラ（伊佐治②）'},
+  {date:'4/5',day:'日',time:'10:00〜10:30',amount:6000,desc:'レギュラー（見崎②）'},
+  {date:'4/12',day:'日',time:'15:00〜16:00',amount:10000,desc:'エキストラ（石井②）'},
+  {date:'4/18',day:'土',time:'14:30〜15:30',amount:10000,desc:'エキストラ（荒木①）'},
+  {date:'4/24',day:'土',time:'16:00〜17:00',amount:10000,desc:'エキストラ（青木②）'},
+  {date:'4/25',day:'日',time:'15:00〜16:00',amount:10000,desc:'エキストラ（古田②）'},
+  {date:'4/29',day:'水',time:'17:00〜18:00',amount:10000,desc:'エキストラ（荒木②）'}
+],other:[]},
+{month:'2026-05',kanshi:[
+  {date:'5/3',day:'日',time:'9:00〜12:00',amount:3000,desc:'日進西高校'},
+  {date:'5/16',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'5/23',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'5/30',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'}
+],lesson:[
+  {date:'5/2',day:'土',time:'11:00〜12:00',amount:10000,desc:'エキストラ（和田森①）'},
+  {date:'5/24',day:'日',time:'10:30〜11:00',amount:6000,desc:'レギュラー（杉村②）'},
+  {date:'5/30',day:'土',time:'11:00〜12:00',amount:10000,desc:'エキストラ（大庭①）'}
+],other:[
+  {date:'5/2',day:'土',time:'15:00〜17:00',amount:7318,desc:'ガイシ水中撮影'},
+  {date:'5/3',day:'日',time:'14:00〜16:00',amount:7318,desc:'ガイシ水中撮影'},
+  {date:'5/17',day:'日',time:'14:00〜16:00',amount:7318,desc:'ガイシ水中撮影'}
+]},
+{month:'2026-06',kanshi:[
+  {date:'6/13',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'6/14',day:'日',time:'10:00〜12:00',amount:3000,desc:'マスターズ'},
+  {date:'6/20',day:'土',time:'12:00〜14:00',amount:3000,desc:'マスターズ'},
+  {date:'6/21',day:'日',time:'10:00〜12:00',amount:3000,desc:'マスターズ'},
+  {date:'6/1〜20',day:'',time:'',amount:13000,desc:'中京大（1人1回 500円）'}
+],lesson:[
+  {date:'6/13',day:'土',time:'17:00〜18:00',amount:10000,desc:'エキストラ（伊佐治③）'},
+  {date:'6/14',day:'日',time:'12:00〜13:00',amount:10000,desc:'エキストラ（正木①）'}
+],other:[
+  {date:'6/15',day:'日',time:'14:30〜18:00',amount:50540,desc:'ドクター会議講師'}
+]},
+{month:'2026-07',kanshi:[],lesson:[
+  {date:'7/5',day:'日',time:'10:00〜11:00',amount:10000,desc:'エキストラ（永野①）'},
+  {date:'7/5',day:'日',time:'11:00〜12:00',amount:10000,desc:'エキストラ（浅野①）'},
+  {date:'7/11',day:'土',time:'14:00〜15:00',amount:10000,desc:'エキストラ（鈴木①）'},
+  {date:'7/11',day:'土',time:'15:00〜16:00',amount:10000,desc:'エキストラ（井戸田①）'},
+  {date:'7/12',day:'日',time:'10:00〜12:00',amount:24000,desc:'レギュラー（奥村、永井、稲垣、宇田川）'},
+  {date:'7/18',day:'土',time:'11:00〜12:00',amount:10000,desc:'エキストラ（大庭②）'},
+  {date:'7/18',day:'土',time:'14:00〜15:00',amount:10000,desc:'エキストラ（正木②）'},
+  {date:'7/19',day:'日',time:'16:00〜17:00',amount:10000,desc:'エキストラ（水野②）'},
+  {date:'7/23',day:'木',time:'13:00〜14:00',amount:10000,desc:'エキストラ（本田①）'}
+],other:[]}
+];
+
+let incomeData=defaultIncome;
+let expandedMonths={};
+let editingIncome=null;
+
+function saveIncome(){saveToCloud()}
+
+function fmt(n){return'¥'+n.toLocaleString()}
+function monthLabel(m){const[y,mo]=m.split('-');return y+'年'+parseInt(mo)+'月'}
+
+function renderBusiness(){
+  const app=document.getElementById('biz-content');
+  const monthSummaries=incomeData.map(m=>{
+    const kTotal=m.kanshi.reduce((s,e)=>s+e.amount,0);
+    const lTotal=m.lesson.reduce((s,e)=>s+e.amount,0);
+    const oTotal=(m.other||[]).reduce((s,e)=>s+e.amount,0);
+    const total=kTotal+lTotal+oTotal;
+    return{month:m.month,kanshi:kTotal,lesson:lTotal,other:oTotal,total};
+  });
+  const grandTotal=monthSummaries.reduce((s,m)=>s+m.total,0);
+  const grandKanshi=monthSummaries.reduce((s,m)=>s+m.kanshi,0);
+  const grandLesson=monthSummaries.reduce((s,m)=>s+m.lesson,0);
+  const grandOther=monthSummaries.reduce((s,m)=>s+m.other,0);
+
+  app.innerHTML=`
+    <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+      <div class="stat"><div class="stat-label">累計収入</div><div class="stat-value" style="font-size:18px;">${fmt(grandTotal)}</div></div>
+      <div class="stat"><div class="stat-label">監視業</div><div class="stat-value" style="font-size:18px;color:#185FA5;">${fmt(grandKanshi)}</div></div>
+      <div class="stat"><div class="stat-label">レッスン</div><div class="stat-value" style="font-size:18px;color:#3B6D11;">${fmt(grandLesson)}</div></div>
+      <div class="stat"><div class="stat-label">解説・講演会・その他</div><div class="stat-value" style="font-size:18px;color:#854F0B;">${fmt(grandOther)}</div></div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <canvas id="incomeChart" height="220"></canvas>
+    </div>
+
+    <div class="toolbar">
+      <div style="font-weight:500;font-size:15px;"><i class="ti ti-calendar" aria-hidden="true"></i> 月別収入</div>
+      <button class="btn-primary" onclick="addNewMonth()"><i class="ti ti-plus" aria-hidden="true"></i> 月を追加</button>
+    </div>
+
+    ${incomeData.slice().reverse().map((m,ri)=>{
+      const idx=incomeData.length-1-ri;
+      const s=monthSummaries[idx];
+      const expanded=expandedMonths[m.month];
+      return`
+      <div class="month-card">
+        <div class="month-header" onclick="expandedMonths['${m.month}']=!expandedMonths['${m.month}'];renderBusiness();">
+          <h3>${monthLabel(m.month)}</h3>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:18px;font-weight:500;">${fmt(s.total)}</span>
+            <i class="ti ti-chevron-${expanded?'up':'down'}" style="color:#aaa;" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="month-summary" style="grid-template-columns:repeat(4,1fr);">
+          <div class="ms"><div class="ms-label">監視業</div><div class="ms-value" style="color:#185FA5;font-size:15px;">${fmt(s.kanshi)}</div></div>
+          <div class="ms"><div class="ms-label">レッスン</div><div class="ms-value" style="color:#3B6D11;font-size:15px;">${fmt(s.lesson)}</div></div>
+          <div class="ms"><div class="ms-label">解説・講演会・その他</div><div class="ms-value" style="color:#854F0B;font-size:15px;">${fmt(s.other)}</div></div>
+          <div class="ms"><div class="ms-label">合計</div><div class="ms-value" style="font-size:15px;">${fmt(s.total)}</div></div>
+        </div>
+        ${expanded?renderMonthDetail(m,idx):''}
+      </div>`;
+    }).join('')}
+  `;
+  drawChart(monthSummaries);
+}
+
+function renderCategoryTable(entries,idx,type,color,label,icon){
+  const key=`${idx}_${type}`;
+  const editing=incomeEditState[key];
+  let html=`<div style="font-size:13px;font-weight:500;color:${color};margin:12px 0 6px;"><i class="ti ti-${icon}" aria-hidden="true" style="font-size:14px;"></i> ${label}</div>`;
+  if(entries.length>0){
+    html+=`<table class="income-table"><tr><th style="width:80px;">日にち</th><th style="width:30px;">曜日</th><th style="width:110px;">時間</th><th style="width:80px;text-align:right;">金額</th><th>内容</th><th style="width:56px;text-align:center;">操作</th></tr>`;
+    entries.forEach((e,ei)=>{
+      if(editing&&editing.type==='edit'&&editing.ei===ei){
+        html+=`<tr style="background:#f0f7ff;">
+          <td><input id="ie_date" value="${e.date}" style="width:72px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_day" value="${e.day}" style="width:28px;font-size:12px;padding:3px 4px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_time" value="${e.time}" style="width:100px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_amount" value="${e.amount}" type="number" style="width:78px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;text-align:right;"></td>
+          <td><input id="ie_desc" value="${e.desc}" style="width:100%;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td style="text-align:center;white-space:nowrap;">
+            <button style="font-size:11px;padding:2px 8px;background:#EAF3DE;color:#3B6D11;border-color:#97C459;" onclick="saveEditEntry(${idx},'${type}',${ei})">保存</button>
+            <button style="font-size:11px;padding:2px 6px;margin-left:2px;" onclick="cancelEditEntry('${key}')">✕</button>
+          </td></tr>`;
+      } else {
+        html+=`<tr>
+          <td>${e.date}</td><td>${e.day}</td><td>${e.time}</td><td class="amount">${fmt(e.amount)}</td><td>${e.desc}</td>
+          <td style="text-align:center;white-space:nowrap;">
+            <i class="ti ti-pencil" style="font-size:13px;color:#aaa;cursor:pointer;margin-right:6px;" onclick="startEditEntry(${idx},'${type}',${ei})" aria-hidden="true"></i>
+            <i class="ti ti-trash" style="font-size:13px;color:#ccc;cursor:pointer;" onclick="deleteEntry(${idx},'${type}',${ei})" aria-hidden="true"></i>
+          </td></tr>`;
+      }
+    });
+    const sub=entries.reduce((s,e)=>s+e.amount,0);
+    html+=`<tr class="total-row"><td colspan="3" style="text-align:right;">小計</td><td class="amount">${fmt(sub)}</td><td colspan="2"></td></tr>`;
+    if(editing&&editing.type==='add'){
+      html+=`<tr style="background:#f0f7ff;">
+        <td><input id="ie_date" placeholder="${parseInt(incomeData[idx].month.split('-')[1])+'/'}" style="width:72px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+        <td><input id="ie_day" placeholder="土" style="width:28px;font-size:12px;padding:3px 4px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+        <td><input id="ie_time" placeholder="10:00〜12:00" style="width:100px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+        <td><input id="ie_amount" type="number" placeholder="0" style="width:78px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;text-align:right;"></td>
+        <td><input id="ie_desc" placeholder="内容" style="width:100%;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+        <td style="text-align:center;white-space:nowrap;">
+          <button style="font-size:11px;padding:2px 8px;background:#EAF3DE;color:#3B6D11;border-color:#97C459;" onclick="saveAddEntry(${idx},'${type}')">追加</button>
+          <button style="font-size:11px;padding:2px 6px;margin-left:2px;" onclick="cancelEditEntry('${key}')">✕</button>
+        </td></tr>`;
+    }
+    html+=`</table>`;
+  } else {
+    html+=`<p style="font-size:12px;color:#aaa;margin-bottom:4px;">データなし</p>`;
+    if(editing&&editing.type==='add'){
+      html+=`<table class="income-table"><tr><th style="width:80px;">日にち</th><th style="width:30px;">曜日</th><th style="width:110px;">時間</th><th style="width:80px;text-align:right;">金額</th><th>内容</th><th style="width:56px;"></th></tr>
+        <tr style="background:#f0f7ff;">
+          <td><input id="ie_date" placeholder="${parseInt(incomeData[idx].month.split('-')[1])+'/'}" style="width:72px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_day" placeholder="土" style="width:28px;font-size:12px;padding:3px 4px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_time" placeholder="10:00〜12:00" style="width:100px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td><input id="ie_amount" type="number" placeholder="0" style="width:78px;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;text-align:right;"></td>
+          <td><input id="ie_desc" placeholder="内容" style="width:100%;font-size:12px;padding:3px 5px;border:.5px solid #85B7EB;border-radius:4px;"></td>
+          <td style="text-align:center;white-space:nowrap;">
+            <button style="font-size:11px;padding:2px 8px;background:#EAF3DE;color:#3B6D11;border-color:#97C459;" onclick="saveAddEntry(${idx},'${type}')">追加</button>
+            <button style="font-size:11px;padding:2px 6px;margin-left:2px;" onclick="cancelEditEntry('${key}')">✕</button>
+          </td>
+        </tr></table>`;
+    }
+  }
+  if(!(editing&&editing.type==='add')){
+    html+=`<div style="margin:4px 0;"><button style="font-size:11px;padding:4px 10px;" onclick="startAddEntry(${idx},'${type}','${key}')"><i class="ti ti-plus" aria-hidden="true"></i> ${label}追加</button></div>`;
+  }
+  return html;
+}
+
+function renderMonthDetail(m,idx){
+  let html=`<div style="margin-top:8px;">`;
+  html+=renderCategoryTable(m.kanshi,idx,'kanshi','#185FA5','監視業','eye');
+  html+=renderCategoryTable(m.lesson,idx,'lesson','#3B6D11','レッスン','swimming');
+  html+=renderCategoryTable(m.other||[],idx,'other','#854F0B','解説・講演会・その他','microphone');
+  html+=`</div>`;
+  return html;
+}
+
+let incomeEditState={};
+
+function startAddEntry(idx,type,key){
+  incomeEditState={[key]:{type:'add'}};
+  renderBusiness();
+  setTimeout(()=>{const el=document.getElementById('ie_date');if(el)el.focus();},50);
+}
+function startEditEntry(idx,type,ei){
+  const key=`${idx}_${type}`;
+  incomeEditState={[key]:{type:'edit',ei}};
+  renderBusiness();
+  setTimeout(()=>{const el=document.getElementById('ie_date');if(el)el.focus();},50);
+}
+function cancelEditEntry(key){
+  delete incomeEditState[key];
+  renderBusiness();
+}
+function saveAddEntry(monthIdx,type){
+  const date=document.getElementById('ie_date').value.trim();
+  const day=document.getElementById('ie_day').value.trim();
+  const time=document.getElementById('ie_time').value.trim();
+  const amount=parseInt(document.getElementById('ie_amount').value)||0;
+  const desc=document.getElementById('ie_desc').value.trim();
+  if(!date&&!amount){cancelEditEntry(`${monthIdx}_${type}`);return;}
+  incomeData[monthIdx][type].push({date,day,time,amount,desc});
+  incomeEditState={};
+  saveIncome();renderBusiness();
+}
+function saveEditEntry(monthIdx,type,ei){
+  const date=document.getElementById('ie_date').value.trim();
+  const day=document.getElementById('ie_day').value.trim();
+  const time=document.getElementById('ie_time').value.trim();
+  const amount=parseInt(document.getElementById('ie_amount').value)||0;
+  const desc=document.getElementById('ie_desc').value.trim();
+  incomeData[monthIdx][type][ei]={date,day,time,amount,desc};
+  incomeEditState={};
+  saveIncome();renderBusiness();
+}
+function addEntry(monthIdx,type){
+  startAddEntry(monthIdx,type,`${monthIdx}_${type}`);
+}
+
+function deleteEntry(monthIdx,type,entryIdx){
+  if(!confirm('この項目を削除しますか？'))return;
+  incomeData[monthIdx][type].splice(entryIdx,1);
+  saveIncome();renderBusiness();
+}
+
+function addNewMonth(){
+  const last=incomeData.length>0?incomeData[incomeData.length-1].month:'2026-06';
+  const[y,mo]=last.split('-').map(Number);
+  let ny=y,nm=mo+1;
+  if(nm>12){nm=1;ny++;}
+  const newMonth=ny+'-'+String(nm).padStart(2,'0');
+  if(incomeData.find(m=>m.month===newMonth)){alert('この月は既に存在します');return;}
+  incomeData.push({month:newMonth,kanshi:[],lesson:[],other:[]});
+  incomeData.sort((a,b)=>a.month.localeCompare(b.month));
+  expandedMonths[newMonth]=true;
+  saveIncome();renderBusiness();
+}
+
+function drawChart(summaries){
+  const canvas=document.getElementById('incomeChart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.parentElement.clientWidth;
+  const H=220;
+  canvas.width=W;canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+
+  const pad={t:24,r:20,b:30,l:60};
+  const cw=W-pad.l-pad.r;
+  const ch=H-pad.t-pad.b;
+  const n=summaries.length;
+  if(n===0)return;
+  const maxVal=Math.max(...summaries.map(s=>s.total))*1.15;
+  const barW=Math.min(50,cw/n*0.6);
+  const gap=cw/n;
+
+  ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch-ch*(i/4);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#aaa';ctx.font='11px sans-serif';ctx.textAlign='right';
+    ctx.fillText('¥'+Math.round(maxVal*i/4/1000)+'k',pad.l-6,y+4);
+  }
+
+  summaries.forEach((s,i)=>{
+    const x=pad.l+gap*i+gap/2;
+    const hK=ch*(s.kanshi/maxVal);
+    const hL=ch*(s.lesson/maxVal);
+    const hO=ch*(s.other/maxVal);
+    let bottom=pad.t+ch;
+    ctx.fillStyle='#85B7EB';
+    ctx.fillRect(x-barW/2,bottom-hK-hL-hO,barW,hK);
+    ctx.fillStyle='#97C459';
+    ctx.fillRect(x-barW/2,bottom-hL-hO,barW,hL);
+    ctx.fillStyle='#EF9F27';
+    ctx.fillRect(x-barW/2,bottom-hO,barW,hO);
+    ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText(parseInt(s.month.split('-')[1])+'月',x,H-pad.b+16);
+  });
+
+  const leg=[{c:'#85B7EB',l:'監視業'},{c:'#97C459',l:'レッスン'},{c:'#EF9F27',l:'解説・講演会・その他'}];
+  let lx=W;
+  leg.slice().reverse().forEach(it=>{
+    const tw=ctx.measureText(it.l).width;
+    lx-=tw+22;
+    ctx.fillStyle=it.c;ctx.fillRect(lx,6,12,12);
+    ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.textAlign='left';
+    ctx.fillText(it.l,lx+15,16);
+  });
+}
+
+// === EXPENSE DATA ===
+const EXP_CATS=[
+  {key:'car',name:'車（家事按分）',color:'#185FA5',icon:'car'},
+  {key:'fee',name:'支払手数料',color:'#534AB7',icon:'receipt'},
+  {key:'travel',name:'旅費交通費',color:'#0F6E56',icon:'map-pin'},
+  {key:'ad',name:'広告宣伝費',color:'#993C1D',icon:'speakerphone'},
+  {key:'entertain',name:'接待交際費',color:'#D85A30',icon:'users'},
+  {key:'supply',name:'消耗品費',color:'#854F0B',icon:'shopping-cart'}
+];
+let expandedExpCats={};
+
+const defaultExpenses=[
+{month:'2026-01',entries:[
+{a:2799,c:'car',d:'ガソリン代',p:'瑞'},{a:2084,c:'car',d:'ガソリン代',p:'瑞'},
+{a:13920,c:'car',d:'駐車場代_レインボー2カ月',p:'瑞'},{a:33000,c:'car',d:'駐車場代',p:'瑞'},
+{a:4000,c:'entertain',d:'オリンピアンの集い',p:'享'},{a:16040,c:'entertain',d:'コーチとの打合せ',p:'享'},
+{a:8400,c:'travel',d:'高速代_浜松',p:'瑞'},{a:1000,c:'travel',d:'マナカ',p:'瑞'},{a:2000,c:'travel',d:'マナカ',p:'瑞'}
+]},
+{month:'2026-02',entries:[
+{a:3005,c:'car',d:'ガソリン',p:'瑞'},{a:3195,c:'car',d:'ガソリン',p:'瑞'},{a:2334,c:'car',d:'ガソリン',p:'瑞'},{a:8292,c:'car',d:'ガソリン',p:'瑞'},
+{a:11880,c:'travel',d:'高速代',p:'享'},{a:5000,c:'travel',d:'マナカ',p:'享'},{a:510,c:'travel',d:'高速代',p:'享'},
+{a:2940,c:'travel',d:'高速代',p:'瑞'},{a:4200,c:'travel',d:'高速代',p:'享'},{a:600,c:'travel',d:'駐車場代',p:'瑞'},{a:700,c:'travel',d:'駐車場代',p:'享'},
+{a:1998,c:'supply',d:'ルーペ',p:'享'},{a:1173,c:'supply',d:'PC用品',p:'享'},{a:5480,c:'supply',d:'印鑑',p:'享'},
+{a:6300,c:'supply',d:'ランニングシューズ',p:'瑞'},{a:760,c:'supply',d:'プリンタ_インク',p:'瑞'},
+{a:3000,c:'ad',d:'蒼馬',p:'享'}
+]},
+{month:'2026-03',entries:[
+{a:3020,c:'car',d:'ガソリン',p:'享'},{a:2000,c:'car',d:'ガソリン',p:'享'},{a:3438,c:'car',d:'ガソリン',p:'瑞'},
+{a:6600,c:'car',d:'駐車場代',p:'瑞'},{a:6600,c:'car',d:'駐車場代',p:'瑞'},
+{a:8412,c:'car',d:'ガソリン',p:'瑞'},{a:400,c:'car',d:'ガソリン',p:'瑞'},{a:6787,c:'car',d:'ガソリン',p:'瑞'},
+{a:4719,c:'entertain',d:'コーチとの打合せ',p:'享'},
+{a:31746,c:'entertain',d:'放送関連（日本選手権）',p:'享'},{a:9850,c:'entertain',d:'放送関連（日本選手権）',p:'享'},
+{a:1000,c:'travel',d:'駐車場代',p:'享'},{a:600,c:'travel',d:'駐車場代',p:'享'},{a:2000,c:'travel',d:'駐車場代',p:'享'},
+{a:22800,c:'travel',d:'新幹線（日本選手権）',p:'享'},
+{a:2300,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:2300,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1300,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1600,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1400,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1500,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1400,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1400,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1300,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:3600,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:7460,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:2400,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:2300,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:700,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1000,c:'travel',d:'マナカ',p:'瑞'},{a:270,c:'travel',d:'マナカ',p:'瑞'},{a:10000,c:'travel',d:'マナカ',p:'瑞'},
+{a:600,c:'travel',d:'駐車場代',p:'瑞'},{a:300,c:'travel',d:'駐車場代',p:'瑞'},
+{a:6990,c:'supply',d:'ユニフォーム',p:'享'},{a:541,c:'supply',d:'文房具',p:'享'},
+{a:4780,c:'supply',d:'水泳道具',p:'瑞'},{a:3720,c:'supply',d:'サポーター',p:'瑞'},
+{a:5940,c:'supply',d:'スエット',p:'瑞'},{a:874,c:'supply',d:'インク',p:'瑞'},
+{a:660,c:'supply',d:'テープ・シールなど',p:'瑞'},{a:1128,c:'supply',d:'文房具',p:'瑞'},{a:550,c:'supply',d:'縄跳び',p:'瑞'}
+]},
+{month:'2026-04',entries:[
+{a:10122,c:'car',d:'ガソリン',p:'瑞'},{a:701,c:'car',d:'ガソリン',p:'瑞'},{a:3038,c:'car',d:'ガソリン',p:'享'},
+{a:76740,c:'car',d:'車検_ミライース',p:'享'},{a:33000,c:'car',d:'駐車場代（5月〜9月）',p:'瑞'},{a:110000,c:'car',d:'タイヤ代',p:'瑞'},
+{a:220,c:'fee',d:'税込手数料',p:'享'},
+{a:700,c:'travel',d:'駐車場代',p:'享'},{a:1500,c:'travel',d:'駐車場代',p:'瑞'},{a:4180,c:'travel',d:'高速代',p:'享'},
+{a:400,c:'travel',d:'駐車場代',p:'享'},{a:400,c:'travel',d:'駐車場代',p:'享'},
+{a:240,c:'travel',d:'マナカ',p:'瑞'},{a:240,c:'travel',d:'マナカ',p:'瑞'},
+{a:3000,c:'travel',d:'マナカ',p:'瑞'},{a:2000,c:'travel',d:'マナカ',p:'瑞'},{a:2000,c:'travel',d:'マナカ',p:'瑞'},
+{a:15870,c:'entertain',d:'コーチとの打合せ',p:'享'},{a:5874,c:'entertain',d:'コーチとの打合せ',p:'享'},
+{a:600,c:'supply',d:'レターパック',p:'享'},{a:1650,c:'supply',d:'文具代',p:'瑞'}
+]},
+{month:'2026-05',entries:[
+{a:3250,c:'car',d:'ガソリン',p:'享'},{a:10800,c:'car',d:'自動車税（6月分）',p:'享'},
+{a:3296,c:'car',d:'ガソリン',p:'享'},{a:9300,c:'car',d:'ガソリン',p:'瑞'},
+{a:500,c:'travel',d:'駐車場代',p:'享'},{a:1000,c:'travel',d:'マナカ',p:'瑞'},{a:500,c:'travel',d:'駐車場代',p:'瑞'},{a:700,c:'travel',d:'駐車場代',p:'享'},
+{a:18890,c:'entertain',d:'コーチとの打合せ',p:'享'},{a:2784,c:'entertain',d:'コーチとの打合せ',p:'享'},
+{a:18059,c:'entertain',d:'コーチとの打合せ',p:'享'},{a:8330,c:'entertain',d:'飲食代',p:'瑞'},
+{a:10585,c:'supply',d:'キャンプ用品',p:'瑞'}
+]},
+{month:'2026-06',entries:[
+{a:43500,c:'car',d:'自動車税',p:'瑞'},{a:3721,c:'car',d:'ガソリン',p:'享'},{a:8824,c:'car',d:'ガソリン',p:'瑞'},
+{a:2800,c:'entertain',d:'お土産',p:'享'},{a:1797,c:'entertain',d:'お土産',p:'享'},
+{a:15191,c:'entertain',d:'打ち合わせ（日本選手権）',p:'享'},{a:2592,c:'entertain',d:'打ち合わせ（日本選手権）',p:'享'},
+{a:14760,c:'entertain',d:'打ち合わせ（日本選手権）',p:'享'},
+{a:1292,c:'entertain',d:'お土産',p:'瑞'},{a:2706,c:'entertain',d:'お土産',p:'瑞'},
+{a:3003,c:'entertain',d:'打ち合わせ',p:'享'},{a:3900,c:'entertain',d:'打ち合わせ',p:'享'},
+{a:11100,c:'travel',d:'新幹線（日本選手権）',p:'享'},{a:10560,c:'travel',d:'新幹線（日本選手権）',p:'享'},
+{a:7470,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:2900,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1500,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1600,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1600,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1500,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1500,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1600,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1400,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1500,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:7160,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:500,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1100,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:800,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:1800,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:3200,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:2700,c:'travel',d:'タクシー（日本選手権）',p:'享'},{a:1400,c:'travel',d:'タクシー（日本選手権）',p:'享'},
+{a:5000,c:'supply',d:'図書',p:'瑞'},{a:10000,c:'supply',d:'図書',p:'瑞'},{a:21986,c:'supply',d:'扇風機',p:'瑞'}
+]}
+];
+
+let expenseData=defaultExpenses;
+
+function getExpCatTotals(entries){
+  const t={};EXP_CATS.forEach(c=>{t[c.key]=0;});
+  (entries||[]).forEach(e=>{t[e.c]=(t[e.c]||0)+e.a;});
+  return t;
+}
+
+function renderExpenses(){
+  const app=document.getElementById('biz-content');
+  const catTotals={};EXP_CATS.forEach(c=>{catTotals[c.key]=0;});
+  let grandTotal=0;
+  const monthData=expenseData.map(m=>{
+    const ct=getExpCatTotals(m.entries);
+    const total=Object.values(ct).reduce((s,v)=>s+v,0);
+    EXP_CATS.forEach(c=>{catTotals[c.key]+=ct[c.key];});
+    grandTotal+=total;
+    return{month:m.month,ct,total,entries:m.entries};
+  });
+
+  app.innerHTML=`
+    <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+      <div class="stat"><div class="stat-label">経費合計</div><div class="stat-value" style="font-size:18px;color:#A32D2D;">${fmt(grandTotal)}</div></div>
+      ${EXP_CATS.filter(c=>catTotals[c.key]>0).map(c=>`
+        <div class="stat"><div class="stat-label">${c.name}</div><div class="stat-value" style="font-size:16px;color:${c.color};">${fmt(catTotals[c.key])}</div></div>
+      `).join('')}
+    </div>
+    <div style="margin-bottom:16px;"><canvas id="expChart" height="220"></canvas></div>
+    <div style="margin-bottom:16px;overflow-x:auto;">
+      <table class="income-table" style="min-width:600px;">
+        <tr><th>科目</th>${monthData.map(m=>`<th style="text-align:right;">${parseInt(m.month.split('-')[1])}月</th>`).join('')}<th style="text-align:right;background:#e8e8e8;">合計</th></tr>
+        ${EXP_CATS.map(c=>{
+          const rowTotal=catTotals[c.key];
+          if(rowTotal===0)return'';
+          return`<tr><td style="white-space:nowrap;color:${c.color};font-weight:500;">${c.name}</td>${monthData.map(m=>`<td class="amount">${m.ct[c.key]?fmt(m.ct[c.key]):'-'}</td>`).join('')}<td class="amount" style="font-weight:500;background:#f8f8f6;">${fmt(rowTotal)}</td></tr>`;
+        }).join('')}
+        <tr class="total-row"><td style="font-weight:500;">合計</td>${monthData.map(m=>`<td class="amount">${fmt(m.total)}</td>`).join('')}<td class="amount" style="background:#f0f0ee;">${fmt(grandTotal)}</td></tr>
+      </table>
+    </div>
+    <div class="toolbar">
+      <div style="font-weight:500;font-size:15px;"><i class="ti ti-calendar" aria-hidden="true"></i> 月別経費明細</div>
+      <button class="btn-primary" onclick="addExpMonth()"><i class="ti ti-plus" aria-hidden="true"></i> 月を追加</button>
+    </div>
+    ${monthData.slice().reverse().map((m,ri)=>{
+      const idx=monthData.length-1-ri;
+      const expanded=expandedMonths['exp_'+m.month];
+      return`<div class="month-card">
+        <div class="month-header" onclick="expandedMonths['exp_${m.month}']=!expandedMonths['exp_${m.month}'];renderExpenses();">
+          <h3>${monthLabel(m.month)}</h3>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:18px;font-weight:500;color:#A32D2D;">${fmt(m.total)}</span>
+            <i class="ti ti-chevron-${expanded?'up':'down'}" style="color:#aaa;" aria-hidden="true"></i>
+          </div>
+        </div>
+        ${expanded?renderExpMonthDetail(m,idx):`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">${EXP_CATS.filter(c=>m.ct[c.key]>0).map(c=>'<span class="badge" style="background:#f0f0ee;color:'+c.color+';padding:4px 10px;">'+c.name+' '+fmt(m.ct[c.key])+'</span>').join('')}</div>`}
+      </div>`;
+    }).join('')}`;
+  drawExpChart(monthData);
+}
+
+function renderExpMonthDetail(m,idx){
+  let html='<div style="margin-top:8px;">';
+  EXP_CATS.forEach(cat=>{
+    const items=(m.entries||[]).filter(e=>e.c===cat.key);
+    if(items.length===0)return;
+    const catTotal=items.reduce((s,e)=>s+e.a,0);
+    const catExpKey='exp_'+m.month+'_'+cat.key;
+    const open=expandedExpCats[catExpKey];
+    html+=`<div style="margin-bottom:8px;border:.5px solid #e8e8e8;border-radius:8px;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f8f8f6;cursor:pointer;border-left:3px solid ${cat.color};" onclick="expandedExpCats['${catExpKey}']=!expandedExpCats['${catExpKey}'];renderExpenses();">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i class="ti ti-${cat.icon}" style="font-size:15px;color:${cat.color};" aria-hidden="true"></i>
+          <span style="font-size:13px;font-weight:500;color:${cat.color};">${cat.name}</span>
+          <span style="font-size:11px;color:#aaa;">${items.length}件</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:15px;font-weight:500;">${fmt(catTotal)}</span>
+          <i class="ti ti-chevron-${open?'up':'down'}" style="font-size:14px;color:#bbb;" aria-hidden="true"></i>
+        </div>
+      </div>
+      ${open?`<div style="padding:0;">
+        <table class="income-table" style="margin:0;">
+        <tr><th style="width:45%;">内容</th><th style="width:20%;text-align:right;">金額</th><th style="width:15%;">支払</th><th style="width:20%;text-align:right;"></th></tr>
+        ${items.map(e=>{
+          const ri=(m.entries||[]).indexOf(e);
+          const editing=expEditTarget&&expEditTarget.mi===idx&&expEditTarget.ei===ri;
+          if(editing) return renderExpEditRow(idx,ri,e,cat);
+          return`<tr>
+            <td style="font-size:12px;">${e.d}</td>
+            <td class="amount" style="font-size:12px;">${fmt(e.a)}</td>
+            <td style="font-size:12px;">${e.p}</td>
+            <td style="text-align:right;">
+              <i class="ti ti-edit" style="font-size:13px;color:#aaa;cursor:pointer;margin-right:6px;" onclick="startEditExp(${idx},${ri})" aria-hidden="true"></i>
+              <i class="ti ti-trash" style="font-size:13px;color:#ccc;cursor:pointer;" onclick="deleteExpEntry(${idx},${ri})" aria-hidden="true"></i>
+            </td></tr>`;
+        }).join('')}
+        <tr class="total-row"><td>小計</td><td class="amount">${fmt(catTotal)}</td><td colspan="2"></td></tr>
+        </table>
+      </div>`:''}
+    </div>`;
+  });
+  html+=`<div style="margin-top:12px;padding:12px;background:#f8f8f6;border-radius:8px;" id="exp-add-area-${idx}">
+    <div style="font-size:12px;font-weight:500;margin-bottom:8px;color:#666;"><i class="ti ti-plus" aria-hidden="true"></i> 経費を追加</div>
+    <div style="display:grid;grid-template-columns:1fr 1.5fr 90px 60px auto;gap:6px;align-items:end;">
+      <div class="form-group" style="margin:0;"><label style="font-size:11px;">科目</label>
+        <select id="exp-add-cat-${idx}" style="font-size:12px;padding:6px;">
+          ${EXP_CATS.map(c=>'<option value="'+c.key+'">'+c.name+'</option>').join('')}
+        </select>
+      </div>
+      <div class="form-group" style="margin:0;"><label style="font-size:11px;">内容</label>
+        <input id="exp-add-desc-${idx}" placeholder="例: ガソリン代" style="font-size:12px;padding:6px;">
+      </div>
+      <div class="form-group" style="margin:0;"><label style="font-size:11px;">金額</label>
+        <input id="exp-add-amt-${idx}" type="number" placeholder="3000" style="font-size:12px;padding:6px;">
+      </div>
+      <div class="form-group" style="margin:0;"><label style="font-size:11px;">支払</label>
+        <select id="exp-add-pay-${idx}" style="font-size:12px;padding:6px;">
+          <option>瑞</option><option>享</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="font-size:12px;padding:6px 12px;height:36px;" onclick="submitAddExp(${idx})"><i class="ti ti-plus" aria-hidden="true"></i></button>
+    </div>
+  </div>
+  <div style="text-align:right;margin-top:8px;font-weight:500;font-size:14px;">月合計: ${fmt(m.total)}</div>
+  </div>`;
+  return html;
+}
+
+let expEditTarget=null;
+
+function renderExpEditRow(mi,ei,e,cat){
+  return`<tr style="background:#FAEEDA;">
+    <td><input id="exp-ed-d" value="${esc(e.d)}" style="font-size:12px;padding:4px 6px;width:100%;"></td>
+    <td><input id="exp-ed-a" type="number" value="${e.a}" style="font-size:12px;padding:4px 6px;width:100%;text-align:right;"></td>
+    <td><select id="exp-ed-p" style="font-size:12px;padding:4px 6px;">
+      <option${e.p==='瑞'?' selected':''}>瑞</option><option${e.p==='享'?' selected':''}>享</option>
+    </select></td>
+    <td style="text-align:right;">
+      <button class="btn-primary" style="font-size:11px;padding:2px 8px;margin-right:2px;" onclick="saveEditExp(${mi},${ei})"><i class="ti ti-check" aria-hidden="true"></i></button>
+      <button style="font-size:11px;padding:2px 8px;" onclick="cancelEditExp()"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </td></tr>`;
+}
+
+function startEditExp(mi,ei){expEditTarget={mi,ei};renderExpenses();}
+function cancelEditExp(){expEditTarget=null;renderExpenses();}
+
+function saveEditExp(mi,ei){
+  const e=expenseData[mi].entries[ei];
+  e.d=document.getElementById('exp-ed-d').value.trim()||e.d;
+  e.a=parseInt(document.getElementById('exp-ed-a').value)||e.a;
+  e.p=document.getElementById('exp-ed-p').value;
+  expEditTarget=null;
+  saveExpenses();renderExpenses();
+}
+
+function submitAddExp(idx){
+  const cat=document.getElementById('exp-add-cat-'+idx).value;
+  const desc=document.getElementById('exp-add-desc-'+idx).value.trim();
+  const amt=parseInt(document.getElementById('exp-add-amt-'+idx).value)||0;
+  const pay=document.getElementById('exp-add-pay-'+idx).value;
+  if(!desc||!amt){alert('内容と金額を入力してください');return;}
+  if(!expenseData[idx].entries)expenseData[idx].entries=[];
+  expenseData[idx].entries.push({a:amt,c:cat,d:desc,p:pay});
+  const catExpKey='exp_'+expenseData[idx].month+'_'+cat;
+  expandedExpCats[catExpKey]=true;
+  saveExpenses();renderExpenses();
+}
+
+function deleteExpEntry(monthIdx,entryIdx){
+  if(!confirm('この経費を削除しますか？'))return;
+  expenseData[monthIdx].entries.splice(entryIdx,1);
+  saveExpenses();renderExpenses();
+}
+
+function addExpMonth(){
+  const last=expenseData.length>0?expenseData[expenseData.length-1].month:'2026-06';
+  const[y,mo]=last.split('-').map(Number);
+  let ny=y,nm=mo+1;if(nm>12){nm=1;ny++;}
+  const newMonth=ny+'-'+String(nm).padStart(2,'0');
+  if(expenseData.find(m=>m.month===newMonth)){alert('この月は既に存在します');return;}
+  expenseData.push({month:newMonth,entries:[]});
+  expenseData.sort((a,b)=>a.month.localeCompare(b.month));
+  expandedMonths['exp_'+newMonth]=true;
+  saveExpenses();renderExpenses();
+}
+
+function saveExpenses(){saveToCloud()}
+
+function drawExpChart(months){
+  const canvas=document.getElementById('expChart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.parentElement.clientWidth;
+  const H=220;
+  canvas.width=W;canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+
+  const pad={t:24,r:20,b:30,l:60};
+  const cw=W-pad.l-pad.r;
+  const ch=H-pad.t-pad.b;
+  const n=months.length;
+  if(n===0)return;
+  const maxVal=Math.max(...months.map(m=>m.total))*1.15||1;
+  const barW=Math.min(50,cw/n*0.6);
+  const gap=cw/n;
+  const catColors=['#85B7EB','#AFA9EC','#5DCAA5','#F0997B','#ED93B1','#EF9F27'];
+
+  ctx.strokeStyle='#e0e0e0';ctx.lineWidth=.5;
+  for(let i=0;i<=4;i++){
+    const y=pad.t+ch-ch*(i/4);
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillStyle='#aaa';ctx.font='11px sans-serif';ctx.textAlign='right';
+    ctx.fillText('¥'+Math.round(maxVal*i/4/1000)+'k',pad.l-6,y+4);
+  }
+
+  months.forEach((m,i)=>{
+    const x=pad.l+gap*i+gap/2;
+    let bottom=pad.t+ch;
+    EXP_CATS.slice().reverse().forEach((c,ci)=>{
+      const val=(m.ct||{})[c.key]||0;
+      if(val===0)return;
+      const h=ch*(val/maxVal);
+      ctx.fillStyle=catColors[EXP_CATS.length-1-ci];
+      bottom-=h;
+      ctx.fillRect(x-barW/2,bottom,barW,h);
+    });
+    ctx.fillStyle='#666';ctx.font='11px sans-serif';ctx.textAlign='center';
+    ctx.fillText(parseInt(m.month.split('-')[1])+'月',x,H-pad.b+16);
+  });
+
+  let lx=W;
+  EXP_CATS.filter((_,i)=>{
+    return months.some(m=>(m.ct||{})[EXP_CATS[i].key]>0);
+  }).reverse().forEach((c,ci)=>{
+    const origIdx=EXP_CATS.indexOf(c);
+    const tw=ctx.measureText(c.name).width;
+    lx-=tw+22;
+    ctx.fillStyle=catColors[origIdx];ctx.fillRect(lx,6,12,12);
+    ctx.fillStyle='#666';ctx.font='10px sans-serif';ctx.textAlign='left';
+    ctx.fillText(c.name,lx+15,15);
+  });
+}
+
+initCloud();
+</script>
+</body>
+</html>
