@@ -604,6 +604,10 @@ function fetchWithTimeout(url,opts,ms=4000){
 
 function loadLocal(){
   clients=JSON.parse(localStorage.getItem('ssd_clients_v3')||'null')||defaultClients;
+  // defaultClientsに新しい受講生が追加されていればlocalStorageにも追加
+  defaultClients.forEach(def=>{
+    if(!clients.find(c=>c.id===def.id)) clients.push(JSON.parse(JSON.stringify(def)));
+  });
   // reviews・lessonDatesがlocalStorageにない場合はdefaultClients/LESSON_DATES_V1からマージ
   clients.forEach(c=>{
     if(!c.reviews||c.reviews.length===0){
