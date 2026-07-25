@@ -617,7 +617,15 @@ function loadLocal(){
     if(LESSON_DATES_V1[c.id]){
       if(!c.lessonDates) c.lessonDates=[];
       LESSON_DATES_V1[c.id].forEach(ld=>{
-        if(!c.lessonDates.find(x=>x.date===ld.date)) c.lessonDates.push(ld);
+        if(!c.lessonDates.find(x=>x.count===ld.count)) c.lessonDates.push(ld);
+      });
+    }
+    // lessonDatesの重複をcountで除去
+    if(c.lessonDates&&c.lessonDates.length>0){
+      const seen=new Set();
+      c.lessonDates=c.lessonDates.filter(x=>{
+        if(seen.has(x.count)) return false;
+        seen.add(x.count); return true;
       });
     }
     // followupsもdefaultClientsからマージ（日付で重複チェック）
