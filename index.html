@@ -620,7 +620,7 @@ const LESSON_DATES_V1={
   18:[{count:1,date:'2026/7/5',day:'日',memo:'クロール、背泳ぎ'}],
   19:[{count:1,date:'2026/7/11',day:'土',memo:''}],
   20:[{count:1,date:'2026/7/12',day:'日',memo:''}],
-  21:[{count:1,date:'2026/7/11',day:'土',memo:''},{count:2,date:'2026/8/8',day:'土',memo:''}],
+  21:[{count:1,date:'2026/7/11',day:'土',memo:''},{count:2,date:'2026/8/8',day:'土',memo:'★キャンセル（ケガのため）'}],
   22:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   23:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   24:[{count:1,date:'2026/7/12',day:'日',memo:''}],
@@ -663,7 +663,9 @@ function loadLocal(){
     if(LESSON_DATES_V1[c.id]){
       if(!c.lessonDates) c.lessonDates=[];
       LESSON_DATES_V1[c.id].forEach(ld=>{
-        if(!c.lessonDates.find(x=>x.count===ld.count)) c.lessonDates.push(ld);
+        const existing=c.lessonDates.find(x=>x.count===ld.count);
+        if(!existing){c.lessonDates.push(ld);}
+        else if(ld.memo&&ld.memo!==existing.memo){existing.memo=ld.memo;}
       });
     }
     // lessonDatesの重複をcountで除去
