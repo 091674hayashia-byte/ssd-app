@@ -550,7 +550,47 @@ notes:'昨年の夏より大きい泳ぎを目指しフォームを改善して�
 height:'164cm',followups:[],reviews:[{session:1,date:'2026/07/23',satisfaction:'非常に満足',clarity:'とても分かりやすかった',
 impression:'左手のキャッチが出来てない　キックのアップキックが出来てないので太ももが動いてない',
 motivation:'すぐに意識して練習してみたい',recommend:'マスターズでタイムが落ちて来てる人に自分の今の泳ぎを見つめ直す機会にしたら良いと思います',
-comments:'自分では出来ていると思っていても映像では全く出来てない事が沢山ありました　直ぐには改善が難しい事もあります　半年後又は1年後にどれくらい出来ているか出来てないかをチェックする為に　また撮影をお願いしたいと思いました'}]}
+comments:'自分では出来ていると思っていても映像では全く出来てない事が沢山ありました　直ぐには改善が難しい事もあります　半年後又は1年後にどれくらい出来ているか出来てないかをチェックする為に　また撮影をお願いしたいと思いました'}]},
+{id:26,name:'得能久子',furigana:'とくのう ひさこ',age:'60歳以上',gender:'女性',
+contact:'09047958515',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）','背泳ぎ'],bestTimes:'25mクロール17秒00 背泳ぎ21秒44',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','スタート'],
+goal:'25mのタイムを縮めたい',
+health:'ある（運動制限は無いのですが2019年、2023年に人工関節の手術をしています）',videoConsent:true,dataConsent:true,
+schedule:'月曜日、土曜日、日曜日 時間は何時でも大丈夫です',
+notes:'広い大学でプールの場所に行けるか不安です 三好ヶ丘駅から徒歩で行けると思いますがもしスクールバスはやはり無理ですよね',
+height:'166cm',followups:[],reviews:[]},
+{id:27,name:'田宮康代',furigana:'たみや やすよ',age:'60歳以上',gender:'女性',
+contact:'09038382729',swimYears:'4〜10年',level:'中級（フォーム修正・楽に泳ぎたい）',
+strokes:['自由形（クロール）','背泳ぎ','バタフライ'],bestTimes:'クロール19秒',
+lessonType:'相談して決めたい',
+improvements:['ストローク','姿勢・浮き','呼吸動作'],
+goal:'平泳ぎの手のかきが誰に教わっても納得出来てない バタフライの浅い泳ぎを目指しているが体重の移し方と手のタイミングが自分にあってからかわからない',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'9月22日〜24日 ※24日は、午前中',
+notes:'力みやすい ソリやすい 力を抜く泳ぎを練習していたら間伸びしたような泳ぎになった気がする',
+height:'154cm',followups:[],reviews:[]},
+{id:28,name:'木原雅美',furigana:'きはら まさみ',age:'60歳以上',gender:'女性',
+contact:'090-8475-8987',swimYears:'4〜10年',level:'上級（タイム向上を目指している）',
+strokes:['背泳ぎ'],bestTimes:'50m背45.06　100m背1.40.20　200背3.39.23（2026年2月）',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','ターン','スタート','持久力'],
+goal:'タイムを少しでも縮めたい。',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'8月21日28日29日→何時でも可 8月30日→10時〜12時以外可',
+notes:'今後、自由型、個人メドレーてみて頂きたいと思います。よろしくおねがい致します。',
+height:'153cm',followups:[],reviews:[]},
+{id:29,name:'小林友香',furigana:'こばやし ゆか',age:'60歳以上',gender:'女性',
+contact:'',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）'],bestTimes:'25mクロール18秒半　25m背泳ぎ23秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','スタート'],
+goal:'バタ足と平泳ぎのキック（キックが大の苦手）飛び込み後の水中動作浮き上がりまで 背泳ぎを力みなく泳ぐ。',
+health:'ない',videoConsent:true,dataConsent:true,
+schedule:'月、木曜日（8/27以外）11時半から16時まで',
+notes:'力みのある泳ぎだと思います。先生から見て、直した方が良い所何でも教えて頂けると嬉しいです。宜しくお願い致します。',
+height:'155cm',followups:[],reviews:[]}
 ];
 
 // === CLOUD SYNC (jsonblob.com) ===
@@ -560,7 +600,7 @@ let syncStatus='ok';
 let saveTimer=null;
 
 const LESSON_DATES_V1={
-  1:[{count:1,date:'2026/2/14',day:'土',memo:'クロール'},{count:2,date:'2026/5/24',day:'日',memo:'クロール、バタフライ'}],
+  1:[{count:1,date:'2026/2/14',day:'土',memo:'クロール'},{count:2,date:'2026/5/24',day:'日',memo:'クロール、バタフライ'},{count:3,date:'2026/8/16',day:'土',memo:''}],
   2:[{count:1,date:'2026/2/22',day:'日',memo:'クロール'}],
   3:[{count:1,date:'2026/2/21',day:'土',memo:'クロール'},{count:2,date:'2026/4/26',day:'日',memo:'クロール'}],
   4:[{count:1,date:'2026/2/21',day:'土',memo:'クロール'},{count:2,date:'2026/4/12',day:'日',memo:'クロール'}],
@@ -571,10 +611,10 @@ const LESSON_DATES_V1={
   9:[{count:1,date:'2026/3/4',day:'水',memo:'クロール'}],
   10:[{count:1,date:'2026/3/14',day:'土',memo:'平泳ぎ'}],
   11:[{count:1,date:'2026/3/15',day:'日',memo:'クロール、バタフライ'}],
-  12:[{count:1,date:'2026/5/2',day:'土',memo:'クロール'}],
-  13:[{count:1,date:'2026/4/18',day:'土',memo:'平泳ぎ'},{count:2,date:'2026/4/29',day:'水',memo:'クロール'}],
+  12:[{count:1,date:'2026/5/2',day:'土',memo:'クロール'},{count:2,date:'2026/8/22',day:'土',memo:''}],
+  13:[{count:1,date:'2026/4/18',day:'土',memo:'平泳ぎ'},{count:2,date:'2026/4/29',day:'水',memo:'クロール'},{count:3,date:'2026/8/22',day:'土',memo:''}],
   14:[{count:1,date:'2026/4/26',day:'日',memo:'クロール'}],
-  15:[{count:1,date:'2026/5/30',day:'土',memo:'背泳ぎ、クロール'},{count:2,date:'2026/7/18',day:'土',memo:'背泳ぎ、クロール'},{count:3,date:'2026/7/29',day:'水',memo:''}],
+  15:[{count:1,date:'2026/5/30',day:'土',memo:'背泳ぎ、クロール'},{count:2,date:'2026/7/18',day:'土',memo:'背泳ぎ、クロール'},{count:3,date:'2026/7/29',day:'水',memo:''},{count:4,date:'2026/8/12',day:'火',memo:''}],
   16:[{count:1,date:'2026/6/14',day:'日',memo:'クロール、バタフライ'}],
   17:[{count:1,date:'2026/7/5',day:'日',memo:'クロール'}],
   18:[{count:1,date:'2026/7/5',day:'日',memo:'クロール、背泳ぎ'}],
@@ -584,7 +624,10 @@ const LESSON_DATES_V1={
   22:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   23:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   24:[{count:1,date:'2026/7/12',day:'日',memo:''}],
-  25:[{count:1,date:'2026/7/23',day:'木',memo:''}]
+  25:[{count:1,date:'2026/7/23',day:'木',memo:''}],
+  26:[{count:1,date:'2026/8/30',day:'土',memo:''}],
+  27:[{count:1,date:'2026/8/31',day:'日',memo:''}],
+  29:[{count:1,date:'2026/8/14',day:'木',memo:''}]
 };
 
 let clients=defaultClients;
