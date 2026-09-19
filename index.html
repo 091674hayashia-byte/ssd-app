@@ -621,6 +621,28 @@ health:'腰の手術経験があり、kick練習など足を使いすぎると�
 videoConsent:true,dataConsent:true,
 schedule:'水曜日10:30〜11:30（または14:00〜15:30）',
 notes:'',height:'150cm',followups:[],reviews:[]},
+{id:34,name:'西村純江',furigana:'にしむら すみえ',age:'60歳以上',gender:'女性',
+contact:'09038301098',swimYears:'11年以上',level:'競技経験あり（大会出場）',
+strokes:['自由形（クロール）','平泳ぎ'],bestTimes:'50mクロール36.82秒　50m平泳ぎ46.56秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート','持久力'],
+goal:'50mのタイムを縮めたい',
+health:'半年前から左肩を痛めている',
+videoConsent:true,dataConsent:true,
+schedule:'土曜日　東海じゅごんの練習の前後',
+notes:'キャッチがうまくなりたい。',
+height:'164cm',followups:[],reviews:[]},
+{id:35,name:'今井田亜弓',furigana:'いまいだ あゆみ',age:'60歳以上',gender:'女性',
+contact:'09074367703',swimYears:'11年以上',level:'中級（フォーム修正・楽に泳ぎたい）',
+strokes:['自由形（クロール）','背泳ぎ','平泳ぎ','バタフライ'],bestTimes:'25m平泳ぎ30秒',
+lessonType:'エクストラレッスン（60分）10,000円',
+improvements:['ストローク','キック','姿勢・浮き','呼吸動作','ターン','スタート'],
+goal:'飛び込み、ターン、タイムを縮めたい',
+health:'ない',
+videoConsent:true,dataConsent:true,
+schedule:'水曜日午前中',
+notes:'10月18日に25mと50m平泳ぎで大会参加予定。飛び込み・ターンを特に教示希望。',
+height:'154cm',followups:[],reviews:[]},
 {id:29,name:'小林友香',furigana:'こばやし ゆか',age:'60歳以上',gender:'女性',
 contact:'',swimYears:'11年以上',level:'競技経験あり（大会出場）',
 strokes:['自由形（クロール）'],bestTimes:'25mクロール18秒半　25m背泳ぎ23秒',
@@ -665,14 +687,16 @@ const LESSON_DATES_V1={
   23:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   24:[{count:1,date:'2026/7/12',day:'日',memo:''}],
   25:[{count:1,date:'2026/7/23',day:'木',memo:''}],
-  26:[{count:1,date:'2026/8/30',day:'土',memo:''}],
+  26:[{count:1,date:'2026/8/30',day:'土',memo:''},{count:2,date:'2026/9/30',day:'火',memo:''}],
   27:[{count:1,date:'2026/8/31',day:'日',memo:'★キャンセル'},{count:2,date:'2026/10/2',day:'金',memo:''}],
   28:[{count:1,date:'2026/8/29',day:'土',memo:''}],
   29:[{count:1,date:'2026/8/14',day:'木',memo:''}],
   30:[{count:1,date:'2026/8/28',day:'金',memo:''}],
   31:[{count:1,date:'2026/8/23',day:'日',memo:''}],
   32:[{count:1,date:'2026/8/30',day:'日',memo:''}],
-  33:[{count:1,date:'2026/9/9',day:'水',memo:''}]
+  33:[{count:1,date:'2026/9/9',day:'水',memo:''}],
+  34:[{count:1,date:'2026/9/19',day:'金',memo:''}],
+  35:[{count:1,date:'2026/9/30',day:'火',memo:''}]
 };
 
 let clients=defaultClients;
@@ -710,7 +734,11 @@ function loadLocal(){
       LESSON_DATES_V1[c.id].forEach(ld=>{
         const existing=c.lessonDates.find(x=>x.count===ld.count);
         if(!existing){c.lessonDates.push(ld);}
-        else if(ld.memo&&ld.memo!==existing.memo){existing.memo=ld.memo;}
+        else{
+          if(ld.memo&&ld.memo!==existing.memo){existing.memo=ld.memo;}
+          if(ld.date&&ld.date!==existing.date){existing.date=ld.date;}
+          if(ld.day&&ld.day!==existing.day){existing.day=ld.day;}
+        }
       });
     }
     // lessonDatesの重複をcountで除去
